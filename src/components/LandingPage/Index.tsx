@@ -27,6 +27,10 @@ import software from '../../assets/Runic-PNGs/Software.png';
 import backgroundImage from '../../assets/Backgrounds/new-services-bg3.jpg';
 import backgroundVideo from '../../assets/Backgrounds/Section4and5.mp4';
 
+import homePageBg from '../../assets/Backgrounds/HomepageBG.jpg';
+import S8 from '../../assets/Backgrounds/S8.jpg';
+
+
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
@@ -198,12 +202,12 @@ const LandingPage = () => {
     <main ref={containerRef} className="relative bg-[#050508] text-white overflow-x-hidden">
       {/* Background Layers */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <motion.div className="absolute inset-0 bg-cover bg-center" style={{ opacity: bg1Opacity, backgroundImage: 'url("/HomepageBG.jpg")' }} />
+        <motion.div className="absolute inset-0 bg-cover bg-center" style={{ opacity: bg1Opacity, backgroundImage: `url(${homePageBg})` }} />
         <motion.div
           className="absolute inset-0 bg-cover bg-center"
           style={{
             opacity: useTransform(bg2InitialOpacity, (v) => v * bgExitOpacity),
-            backgroundImage: 'url("/new-services-bg3.jpg")',
+            backgroundImage: `url(${backgroundImage})`,
             mixBlendMode: 'screen'
           }}
         />
@@ -211,7 +215,7 @@ const LandingPage = () => {
         {/* S8Bg layer: Slow, wide-range fade in */}
         <motion.div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ opacity: s8BgOpacity, backgroundImage: 'url("/S8.jpg")', mixBlendMode: 'screen' }}
+          style={{ opacity: s8BgOpacity, backgroundImage: `url(${S8})`, mixBlendMode: 'screen' }}
         />
       </div>
 
