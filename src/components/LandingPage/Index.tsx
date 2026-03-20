@@ -171,10 +171,16 @@ const LandingPage = () => {
           pin: true,
           pinSpacing: true,
           scrub: 0.5,
+          onEnter: () => api.setScrollSyncEnabled?.(true),
+          onLeave: () => api.setScrollSyncEnabled?.(false),
+          onEnterBack: () => api.setScrollSyncEnabled?.(true),
+          onLeaveBack: () => api.setScrollSyncEnabled?.(false),
           onUpdate: (self) => {
             const currentP = self.progress * maxProgress;
-            // Slave the 3D engine to the scrollbar
-            // if (api.updateProgress) api.updateProgress(currentP);
+            // Slave the 3D engine to the scrollbar.
+            // This keeps SlideProgress's internal scroll perfectly synced
+            // with GSAP's pinned scroll (wheel/trackpad/middle-mouse drag all work).
+            api.updateProgress?.(currentP);
             setCarouselProgress(currentP);
           }
         });

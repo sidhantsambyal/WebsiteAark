@@ -9,6 +9,7 @@ export interface WebglRendererAPI {
   manager: WebglManager;
   items: Items | null;
   updateProgress?: (progress: number) => void;
+  setScrollSyncEnabled?: (enabled: boolean) => void;
   getCarouselProgress?: () => number;
   getCarouselMaxProgress?: () => number;
   destroy: () => void;
@@ -55,6 +56,8 @@ export const useWebglRenderer = ({
   const itemsRef = useRef<Items | null>(null);
   const apiRef = useRef<WebglRendererAPI | null>(null);
   const hasInitializedRef = useRef(false);
+  const lastExternalProgressRef = useRef<number | null>(null);
+  const scrollSyncEnabledRef = useRef(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -112,6 +115,15 @@ export const useWebglRenderer = ({
         if (validImages.length > 0) {
           const items = new Items({ manager, images: validImages });
           itemsRef.current = items;
+
+          // If GSAP pin-scroll already started while images were loading,
+          // immediately sync the newly created SlideProgress to the latest value.
+          if (scrollSyncEnabledRef.current) {
+            items.setScrollSyncEnabled(true);
+            if (lastExternalProgressRef.current !== null) {
+              items.syncProgress(lastExternalProgressRef.current);
+            }
+          }
         }
 
         handleLoaded(); // Final completion signal
@@ -136,13 +148,26 @@ export const useWebglRenderer = ({
     apiRef.current = {
       manager,
       items: itemsRef.current,
+      updateProgress: (progress: number) => {
+        lastExternalProgressRef.current = progress;
+        itemsRef.current?.syncProgress(progress);
+      },
+      setScrollSyncEnabled: (enabled: boolean) => {
+        scrollSyncEnabledRef.current = enabled;
+        itemsRef.current?.setScrollSyncEnabled(enabled);
+
+        // If enabling, apply the latest buffered progress immediately.
+        if (enabled && lastExternalProgressRef.current !== null) {
+          itemsRef.current?.syncProgress(lastExternalProgressRef.current);
+        }
+      },
       getCarouselProgress: () => itemsRef.current?.getProgress() ?? 0,
       getCarouselMaxProgress: () => itemsRef.current?.getMaxProgress() ?? 0,
       destroy: () => {
         if (managerRef.current) {
           // Pause animation frame first to stop rendering loop
           managerRef.current.pause();
-          
+
           // Clean up Three.js resources to prevent memory leaks
           managerRef.current.scene.traverse((child: Object3D) => {
             if (child instanceof Mesh) {
@@ -157,7 +182,7 @@ export const useWebglRenderer = ({
               }
             }
           });
-          
+
           // Call manager's destroy method
           managerRef.current.destroy();
           managerRef.current = null;
@@ -181,7 +206,7 @@ export const useWebglRenderer = ({
     apiRef.current || {
       manager: null as unknown as WebglManager,
       items: null,
-      destroy: () => {},
+      destroy: () => { },
     }
   );
 };

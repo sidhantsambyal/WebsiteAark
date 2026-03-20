@@ -22,6 +22,12 @@ export class Items {
 
   private _mouseMove: MouseMove;
 
+  /**
+   * When true, GSAP/ScrollTrigger drives the `SlideProgress` value.
+   * We disable SlideProgress's internal wheel/drag handlers to avoid drift.
+   */
+  private _scrollSyncEnabled = false;
+
   private get length() {
     return this._props.images.length;
   }
@@ -62,6 +68,54 @@ export class Items {
     // render
     this._render();
     this._callbacks.push(manager.callbacks.add('render', () => this._render()));
+  }
+
+  /**
+   * Enable/disable external scroll driving (GSAP pin scroll).
+   * While enabled we turn off SlideProgress internal wheel/drag to ensure 1:1 sync.
+   */
+  public setScrollSyncEnabled(enabled: boolean) {
+    this._scrollSyncEnabled = enabled;
+
+    const sp = this._slideProgress as unknown as {
+      changeProps?: (props: { hasWheel?: boolean; hasDrag?: boolean }) => void;
+      // internal fields, used only for best-effort stopping
+      _animationFrame?: { pause?: () => void };
+      _timelineTo?: { destroy?: () => void };
+    };
+
+    sp._timelineTo?.destroy?.();
+    if (sp._timelineTo) sp._timelineTo = undefined;
+    sp._animationFrame?.pause?.();
+
+    // Disable/enable internal input handlers
+    sp.changeProps?.({
+      hasWheel: enabled ? false : true,
+      hasDrag: enabled ? false : true,
+    });
+  }
+
+  /** Force SlideProgress to the given value immediately (no easing). */
+  public syncProgress(progress: number) {
+    // Expected range is [0, length-1]; clamp defensively.
+    const max = this.length - 1;
+    const clamped = Math.max(0, Math.min(max, progress));
+
+    const sp = this._slideProgress as unknown as {
+      _progressLerp?: { current: number; target: number };
+      _timelineTo?: { destroy?: () => void };
+      _animationFrame?: { pause?: () => void };
+    };
+
+    // Ensure internal animation doesn't “fight” the external value.
+    sp._timelineTo?.destroy?.();
+    if (sp._timelineTo) sp._timelineTo = undefined;
+    sp._animationFrame?.pause?.();
+
+    if (sp._progressLerp) {
+      sp._progressLerp.current = clamped;
+      sp._progressLerp.target = clamped;
+    }
   }
 
   /** Render scene */
@@ -105,7 +159,9 @@ export class Items {
 
   /** Render scroll line */
   private _renderScrollLine() {
-    this._scrollLine.render(this._slideProgress.progress / (this.length - 1));
+    // `length - 1` maps SlideProgress progress to [0..1] for the indicator.
+    const denom = Math.max(1, this.length - 1);
+    this._scrollLine.render(this._slideProgress.progress / denom);
   }
 
   /** Get current carousel scroll progress (0 to length-1) */
