@@ -4751,13 +4751,13 @@ void main() {\r
   alpha *= vPointAlpha;\r
 \r
   gl_FragColor = vec4(color, alpha);\r
-}`;class Fit{constructor(t){Qe(this,"_geometry");Qe(this,"_texture");Qe(this,"_material");Qe(this,"_mesh");Qe(this,"_progress",{in:0,out:0});this._props=t;const{image:e,parent:i}=t,r=550,a=150,l=.5,c=r*l,f=Math.max(1,Math.floor(a*l));this._geometry=new jp(c,c,f,f);const d=Nit+Oit;this._texture=new Ji(e),this._texture.needsUpdate=!0,this._material=new Pi({vertexShader:d+Uit,fragmentShader:d+Iit,uniforms:{u_time:{value:0},u_map:{value:this._texture},u_inProgress:{value:1},u_outProgress:{value:0},u_rotationRadius:{value:5},u_PointSize:{value:20}},depthWrite:!1,transparent:!0}),this._mesh=new Jh(this._geometry,this._material),this._mesh.visible=!1,i.add(this._mesh)}get progress(){return this._progress}set progress(t){this._progress=t,this._material.uniforms.u_inProgress.value=t.in,this._material.uniforms.u_outProgress.value=t.out,this._mesh.visible=t.in>0&&t.out<1}render(){this._material.uniforms.u_time.value+=1;const t=(1-this._progress.in)*Math.PI*.5,e=this._progress.out*Math.PI*-2;this._mesh.rotation.y=t+e}destroy(){this._props.parent.remove(this._mesh),this._geometry.dispose(),this._material.dispose(),this._texture.dispose()}}class Bit{constructor(t){Qe(this,"_element");Qe(this,"_circle");Qe(this,"_pointer");Qe(this,"_circumference");Qe(this,"_size");this._element=document.createElement("div"),this._element.classList.add("scroll-circle"),(t??document.body).append(this._element);const r=600/2-4;this._circumference=2*Math.PI*r,this._element.innerHTML=`
+}`;class Fit{constructor(t){Qe(this,"_geometry");Qe(this,"_texture");Qe(this,"_material");Qe(this,"_mesh");Qe(this,"_progress",{in:0,out:0});this._props=t;const{image:e,parent:i}=t,r=550,a=150,l=.5,c=r*l,f=Math.max(1,Math.floor(a*l));this._geometry=new jp(c,c,f,f);const d=Nit+Oit;this._texture=new Ji(e),this._texture.needsUpdate=!0,this._material=new Pi({vertexShader:d+Uit,fragmentShader:d+Iit,uniforms:{u_time:{value:0},u_map:{value:this._texture},u_inProgress:{value:1},u_outProgress:{value:0},u_rotationRadius:{value:5},u_PointSize:{value:20}},depthWrite:!1,transparent:!0}),this._mesh=new Jh(this._geometry,this._material),this._mesh.visible=!1,i.add(this._mesh)}get progress(){return this._progress}set progress(t){this._progress=t,this._material.uniforms.u_inProgress.value=t.in,this._material.uniforms.u_outProgress.value=t.out,this._mesh.visible=t.in>0&&t.out<1}render(){this._material.uniforms.u_time.value+=1;const t=(1-this._progress.in)*Math.PI*.5,e=this._progress.out*Math.PI*-2;this._mesh.rotation.y=t+e}destroy(){this._props.parent.remove(this._mesh),this._geometry.dispose(),this._material.dispose(),this._texture.dispose()}}class Bit{constructor(t){Qe(this,"_element");Qe(this,"_circle");Qe(this,"_pointer");Qe(this,"_circumference");Qe(this,"_size");this._size=600;const e=this._size/2-4;this._circumference=2*Math.PI*e,this._element=document.createElement("div"),this._element.classList.add("scroll-circle"),(t??document.body).append(this._element),this._element.innerHTML=`
       <svg width="${this._size}" height="${this._size}" viewBox="0 0 ${this._size} ${this._size}">
         <circle
           class="progress-line"
           cx="${this._size/2}"
           cy="${this._size/2}"
-          r="${r}"
+          r="${e}"
           stroke="#134075"
           stroke-width="3"
           fill="none"
@@ -4770,7 +4770,7 @@ void main() {\r
           class="pointer-tip"
           cx="${this._size/2}"
           cy="${this._size/2}"
-          r="${r}"
+          r="${e}"
           stroke="white"
           stroke-width="6" 
           fill="none"
