@@ -6,15 +6,16 @@ export class ScrollLine {
   private _size: number;
 
   constructor(container?: HTMLElement) {
+
+    // create svg circle for progress indicator
+    this._size = 600; // adjust to be larger than PNG plane
+    const radius = this._size / 2 - 4; // leave room for stroke
+    this._circumference = 2 * Math.PI * radius;
+
     this._element = document.createElement('div');
     this._element.classList.add('scroll-circle');
     const parent = container ?? document.body;
     parent.append(this._element);
-
-    // create svg circle for progress indicator
-    const size = 600; // adjust to be larger than PNG plane
-    const radius = size / 2 - 4; // leave room for stroke
-    this._circumference = 2 * Math.PI * radius;
 
     this._element.innerHTML = `
       <svg width="${this._size}" height="${this._size}" viewBox="0 0 ${this._size} ${this._size}">
