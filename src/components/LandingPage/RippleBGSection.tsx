@@ -69,7 +69,7 @@ const RippleBGSection = () => {
 
       {/* Second Heading Section */}
       <div className="relative h-screen w-full flex items-center justify-center p-8">
-        <div className="text-center max-w-5xl">
+        <div className="text-center max-w-3xl">
           <AnimatedText text={line2} delayOffset={20} />
         </div>
       </div>

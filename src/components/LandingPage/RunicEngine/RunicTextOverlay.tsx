@@ -62,13 +62,13 @@ function clamp01(v: number) {
 function quadrantClass(q: Quadrant) {
   switch (q) {
     case 'top-left':
-      return 'top-[max(4rem,6vh)] left-[max(2.5rem,4vw)] text-left';
+      return 'top-[max(7rem,6vh)] left-[max(2.5rem,7vw)] text-left';
     case 'bottom-left':
-      return 'bottom-[max(4rem,6vh)] left-[max(2.5rem,4vw)] text-left';
+      return 'bottom-[max(9rem,6vh)] left-[max(2.5rem,9vw)] text-left';
     case 'top-right':
-      return 'top-[max(4rem,6vh)] right-[max(2.5rem,4vw)] text-right';
+      return 'top-[max(7rem,6vh)] right-[max(2.5rem,3vw)] text-right';
     case 'bottom-right':
-      return 'bottom-[max(4rem,6vh)] right-[max(2.5rem,4vw)] text-right';
+      return 'bottom-[max(9rem,6vh)] right-[max(2.5rem,3vw)] text-right';
   }
 }
 
@@ -146,34 +146,34 @@ export function RunicTextOverlay({
       }}
     >
       <motion.div style={{ opacity: wrapperOpacity }} className="absolute inset-0">
-      {/* Paragraph 1 */}
-      <div className={`absolute ${quadrantClass(subset.paragraph1.position)} max-w-[min(42rem,44vw)]`}>
-        <div
-          className="font-oxanium text-[clamp(0.95rem,1.15vw,1.15rem)] tracking-[0.12em] text-white/90"
-          style={{ filter: `blur(${p1Line1.blur}px)`, opacity: p1Line1.opacity }}
-        >
-          {subset.paragraph1.intro}
+        {/* Paragraph 1 */}
+        <div className={`absolute ${quadrantClass(subset.paragraph1.position)} max-w-[min(30rem,32vw)]`}>
+          <div
+            className="font-oxanium text-[clamp(0.95rem,1.15vw,1.15rem)] tracking-[0.12em] text-white/90 "
+            style={{ filter: `blur(${p1Line1.blur}px)`, opacity: p1Line1.opacity }}
+          >
+            {subset.paragraph1.intro}
+          </div>
+          <div
+            className="mt-3 whitespace-pre-line font-oxanium font-light leading-[0.95] text-[clamp(2.4rem,3.5vw,3rem)] tracking-[0.06em] text-white"
+            style={{ filter: `blur(${p1Line2.blur}px)`, opacity: p1Line2.opacity }}
+          >
+            {subset.paragraph1.impact}
+          </div>
         </div>
-        <div
-          className="mt-3 whitespace-pre-line font-oxanium font-light leading-[0.95] text-[clamp(2.4rem,3.5vw,4rem)] tracking-[0.06em] text-white"
-          style={{ filter: `blur(${p1Line2.blur}px)`, opacity: p1Line2.opacity }}
-        >
-          {subset.paragraph1.impact}
-        </div>
-      </div>
 
-      {/* Paragraph 2 */}
-      <div className={`absolute ${quadrantClass(subset.paragraph2.position)} max-w-[min(46rem,48vw)]`}>
-        <div
-          className="font-mono text-[clamp(0.72rem,0.9vw,0.9rem)] tracking-[0.28em] text-white/80"
-          style={{ opacity: p2Opacity, filter: `blur(${6 * (1 - p2Opacity)}px)` }}
-        >
-          {p2Text}
-          <span className="inline-block w-[0.6ch] align-baseline" style={{ opacity: localT < 0.78 ? 1 : 0 }}>
-            _
-          </span>
+        {/* Paragraph 2 */}
+        <div className={`absolute ${quadrantClass(subset.paragraph2.position)} max-w-[min(30rem,34vw)]`}>
+          <div
+            className="font-mono text-[clamp(0.72rem,0.9vw,0.9rem)] tracking-[0.28em] leading-relaxed text-white/80 whitespace-normal break-words "
+            style={{ opacity: p2Opacity, filter: `blur(${6 * (1 - p2Opacity)}px)` }}
+          >
+            {p2Text}
+            <span className="inline-block w-[0.6ch] align-baseline" style={{ opacity: localT < 0.78 ? 1 : 0 }}>
+              _
+            </span>
+          </div>
         </div>
-      </div>
       </motion.div>
     </motion.div>
   );
