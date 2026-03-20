@@ -8,7 +8,7 @@ export class ScrollLine {
   constructor(container?: HTMLElement) {
 
     // create svg circle for progress indicator
-    this._size = 600; // adjust to be larger than PNG plane
+    this._size = 500; // adjust to be larger than PNG plane
     const radius = this._size / 2 - 4; // leave room for stroke
     this._circumference = 2 * Math.PI * radius;
 
