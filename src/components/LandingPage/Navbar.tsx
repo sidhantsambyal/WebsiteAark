@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import logo from '../../assets/Backgrounds/logo.svg';
 
 
 const Navbar = () => {
@@ -14,7 +15,7 @@ const Navbar = () => {
         transition={{ duration: 0.8 }}
       >
         <img
-          src="/logo.svg"
+          src={logo}
           alt="Logo"
           className="w-10 h-10 cursor-pointer" // Use Tailwind for sizing
         />
