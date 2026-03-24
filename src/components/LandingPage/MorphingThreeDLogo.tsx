@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler";
+
 import logo from '../../assets/Backgrounds/logo.svg'
 
 interface MorphingLogoProps {

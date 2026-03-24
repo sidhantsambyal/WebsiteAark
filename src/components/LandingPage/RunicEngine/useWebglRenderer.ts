@@ -167,7 +167,7 @@ export const useWebglRenderer = ({
         if (managerRef.current) {
           // Pause animation frame first to stop rendering loop
           managerRef.current.pause();
-
+          
           // Clean up Three.js resources to prevent memory leaks
           managerRef.current.scene.traverse((child: Object3D) => {
             if (child instanceof Mesh) {
@@ -182,7 +182,7 @@ export const useWebglRenderer = ({
               }
             }
           });
-
+          
           // Call manager's destroy method
           managerRef.current.destroy();
           managerRef.current = null;
@@ -206,7 +206,7 @@ export const useWebglRenderer = ({
     apiRef.current || {
       manager: null as unknown as WebglManager,
       items: null,
-      destroy: () => { },
+      destroy: () => {},
     }
   );
 };

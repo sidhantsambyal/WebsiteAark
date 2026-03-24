@@ -4,45 +4,50 @@ import gsap from 'gsap';
 
 interface NeuralNetworkProps {
   scatter: number;
+  showText?: boolean;      // NEW: control whether animated text appears
 }
 
-const NeuralNetworkBackground: React.FC<NeuralNetworkProps> = ({ scatter }) => {
+const NeuralNetworkBackground: React.FC<NeuralNetworkProps> = ({
+  scatter,
+  showText = true
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const materialRef = useRef<THREE.ShaderMaterial | null>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
   const [index, setIndex] = useState(0);
   const isInitializedRef = useRef(false);
+
   const phrases = ["HELLO", "WELCOME TO", "AARK GLOBAL"];
 
-
+  // Text cycling – only when showText = true
   useEffect(() => {
+    if (!showText) return;
+
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % phrases.length);
     }, 2000);
-    return () => clearInterval(timer);
-  }, [phrases.length]);
 
-  // GSAP CHARACTER ANIMATION ---
+    return () => clearInterval(timer);
+  }, [showText, phrases.length]);
+
+  // GSAP character stagger animation – only when showText = true
   useLayoutEffect(() => {
-    if (!containerRef.current) return;
+    if (!showText || !containerRef.current) return;
 
     const chars = containerRef.current.querySelectorAll('.char');
     const tl = gsap.timeline();
 
-    // Reset initial state
     tl.set(chars, {
       opacity: 0,
-      scaleY: 1.9,
+      scaleY: 4,
       scaleX: 0.5,
-      y: 10,
+      y: 50,
       filter: "blur(15px)",
       transformOrigin: "50% 50%"
     });
 
-    // Intro Animation
     tl.to(chars, {
       opacity: 1,
       scaleY: 1,
@@ -51,13 +56,9 @@ const NeuralNetworkBackground: React.FC<NeuralNetworkProps> = ({ scatter }) => {
       filter: "blur(0px)",
       duration: 1.2,
       ease: "expo.out",
-      stagger: {
-        amount: 0.5,
-        from: "random"
-      }
+      stagger: { amount: 0.5, from: "random" }
     });
 
-    // Outro Animation (starts after a delay)
     tl.to(chars, {
       opacity: 0,
       y: -40,
@@ -65,16 +66,13 @@ const NeuralNetworkBackground: React.FC<NeuralNetworkProps> = ({ scatter }) => {
       duration: 0.8,
       delay: 1.5,
       ease: "power2.in",
-      stagger: {
-        amount: 0.3,
-        from: "random"
-      }
+      stagger: { amount: 0.3, from: "random" }
     });
 
     return () => { tl.kill(); };
-  }, [index]);
+  }, [index, showText]);
 
-  //THREE.JS BLOB LOGIC ---
+  // ─── THREE.js Blob ────────────────────────────────────────────────
   useEffect(() => {
     if (!canvasRef.current || isInitializedRef.current) return;
 
@@ -85,11 +83,9 @@ const NeuralNetworkBackground: React.FC<NeuralNetworkProps> = ({ scatter }) => {
     const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current, antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
     isInitializedRef.current = true;
     rendererRef.current = renderer;
 
-    //The Skeleton of the Blob
     const geometry = new THREE.SphereGeometry(1.5, 70, 60);
 
     const material = new THREE.ShaderMaterial({
@@ -110,31 +106,22 @@ const NeuralNetworkBackground: React.FC<NeuralNetworkProps> = ({ scatter }) => {
 
         void main() {
           vec3 pos = position;
-          
-          // --- BLOB DISTORTION ---
-          // Increased noise for a more "fluid" look
           float noise = sin(pos.x * 4.0 + time) * 0.1;
-          // 
           vec3 spherePos = pos + normal * noise;
-
-          // --- SCATTER LOGIC ---
           vec3 scatteredPos = spherePos + normal * (uScatter * 15.0);
           vec3 finalPos = scatteredPos;
 
-          // --- MOUSE PARALLAX ---
           float mouseFactor = 1.0 - clamp(uScatter * 1.5, 0.0, 1.0);
           finalPos.x += uMouse.x * 0.5 * mouseFactor;
           finalPos.y += uMouse.y * 0.5 * mouseFactor;
 
-         
-          // Deep Dark Blue (#001A3D)
-          vec3 targetColor = vec3(0.0, 0.102, 0.239); 
+          vec3 targetColor = vec3(0.0, 0.102, 0.239);
           vColor = mix(vec3(0.4, 0.6, 1.0), targetColor, uScatter);
-          
+
           vec4 mvPosition = modelViewMatrix * vec4(finalPos, 1.0);
           float sizeFactor = 1.0 - (uScatter * 0.5);
           gl_PointSize = uPointSize * sizeFactor * (12.0 / -mvPosition.z);
-          
+
           gl_Position = projectionMatrix * mvPosition;
         }
       `,
@@ -191,7 +178,7 @@ const NeuralNetworkBackground: React.FC<NeuralNetworkProps> = ({ scatter }) => {
     };
   }, []);
 
-  // Update scatter uniform when prop changes
+  // Update scatter
   useEffect(() => {
     if (materialRef.current) {
       materialRef.current.uniforms.uScatter.value = scatter;
@@ -202,32 +189,30 @@ const NeuralNetworkBackground: React.FC<NeuralNetworkProps> = ({ scatter }) => {
     <div className="relative w-full h-full bg-transparent overflow-hidden">
       <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full" />
 
-      {/* GSAP Text Container */}
-      <div
-        ref={containerRef}
-        style={{ opacity: 1 - scatter * 2 }}
-        className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none"
-      >
-        <h1
-          className="text-center flex flex-wrap justify-center pointer-events-none 
-           font-Medium text-white tracking-tighter leading-none
-           text-[clamp(3rem,6vw,8rem)] font-['oxanium']"
+      {showText && (
+        <div
+          ref={containerRef}
+          style={{ opacity: 1 - Math.min(scatter * 2, 1) }}
+          className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none"
         >
-
-          {phrases[index].split("").map((char, i) => (
-            <span
-              key={`${index}-${i}`}
-              className="char inline-block whitespace-pre will-change-[transform,opacity,filter]"
-            >
-              {char}
-            </span>
-          ))}
-        </h1>
-      </div>
+          <h1
+            className="text-center flex flex-wrap justify-center pointer-events-none
+                     font-medium text-white tracking-tighter leading-none
+                     text-[clamp(3rem,6vw,8rem)] font-['oxanium']"
+          >
+            {phrases[index].split("").map((char, i) => (
+              <span
+                key={`${index}-${i}`}
+                className="char inline-block whitespace-pre will-change-[transform,opacity,filter]"
+              >
+                {char}
+              </span>
+            ))}
+          </h1>
+        </div>
+      )}
     </div>
   );
 };
 
 export default NeuralNetworkBackground;
-
-// 1

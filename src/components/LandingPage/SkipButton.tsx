@@ -1,55 +1,58 @@
 import React from 'react';
 
-const SkipButton: React.FC = () => {
-    return (
-        <div className="skip-container">
-            <button className="Btn">
-                <span className="text">Skip</span>
-            </button>
+interface SkipButtonProps {
+  onSkip?: () => void;
+}
 
-            <style>{`
-        .skip-container {
-          position: fixed;
-          bottom: 20px;
-          right: 20px;
-          z-index: 9999;
-        }
+const SkipButton: React.FC<SkipButtonProps> = ({ onSkip }) => {
+  return (
+    <div className="skip-container">
+      <button className="Btn" onClick={onSkip}>
+        <span className="text">Skip</span>
+      </button>
 
-        .Btn {
-          position: relative;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 75px;
-          height: 28px;
-          background-color: #0d2a54;
-          color: #ffffff;
-          border: 1px solid #9db1cc;
-          border-radius: 20px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          overflow: hidden;
-        }
+      <style>{`
+                .skip-container {
+                  position: fixed;
+                  bottom: 20px;
+                  right: 20px;
+                  z-index: 9999;
+                }
 
-        .text {
-          font-family: 'Segoe UI', sans-serif;
-          font-size: 12px;
-          font-weight: 500;
-          transition: all 0.3s ease;
-        }
+                .Btn {
+                  position: relative;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  width: 75px;
+                  height: 28px;
+                  background-color: #0d2a54;
+                  color: #ffffff;
+                  border: 1px solid #9db1cc;
+                  border-radius: 20px;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  overflow: hidden;
+                }
 
-        /* Hover Effects */
-        .Btn:hover {
-          background-color: #163a6e;
-          border-color: #ffffff;
-        }
+                .text {
+                  font-family: 'Segoe UI', sans-serif;
+                  font-size: 12px;
+                  font-weight: 500;
+                  transition: all 0.3s ease;
+                }
 
-        .Btn:active {
-          transform: scale(0.95);
-        }
-      `}</style>
-        </div>
-    );
+                .Btn:hover {
+                  background-color: #163a6e;
+                  border-color: #ffffff;
+                }
+
+                .Btn:active {
+                  transform: scale(0.95);
+                }
+            `}</style>
+    </div>
+  );
 };
 
 export default SkipButton;

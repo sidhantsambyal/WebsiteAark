@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react'
 import { useScroll, useMotionValueEvent, useSpring, motion, useTransform } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import NeuralNetworkBackground from './NeuralNetworkBackground';
 
 import LogoSection from './LogoSection';
@@ -15,6 +16,7 @@ import type { WebglRendererAPI } from './RunicEngine/useWebglRenderer';
 import AIContactSection from './AIChatBot';
 import Navbar from './Navbar';
 import SkipButton from './SkipButton';
+import ChallengeOutcomeSection from './StartConvo';
 
 // Assets
 import aarkLogo from '../../assets/Runic-PNGs/aark-logo.png';
@@ -26,13 +28,11 @@ import semiconductor from '../../assets/Runic-PNGs/semiconductor.png';
 import software from '../../assets/Runic-PNGs/Software.png';
 import backgroundImage from '../../assets/Backgrounds/new-services-bg3.jpg';
 import backgroundVideo from '../../assets/Backgrounds/Section4and5.mp4';
-
 import homePageBg from '../../assets/Backgrounds/HomepageBG.jpg';
 import S8 from '../../assets/Backgrounds/S8.jpg';
 
-
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 }
 
 const LandingPage = () => {
@@ -47,6 +47,14 @@ const LandingPage = () => {
     target: runicSectionRef,
     offset: ["start end", "end start"]
   });
+
+  const handleSkip = () => {
+    gsap.to(window, {
+      duration: 2,
+      scrollTo: "#challenge-section", // Target the ID we'll create below
+      ease: "power4.inOut"
+    });
+  };
 
   // States for background and animation progress
   const [bgExitOpacity, setBgExitOpacity] = useState(1);
@@ -114,7 +122,7 @@ const LandingPage = () => {
     target: runicSectionRef,
     offset: ["start end", "start start"]
   });
-  const runicOpacity = useTransform(runicFadeProgress, [0.9, 0.95], [0, 1]);
+  const runicOpacity = useTransform(runicFadeProgress, [0.5, 0.95], [0, 1]);
 
   useMotionValueEvent(smoothScatter, "change", setS2Value);
 
@@ -280,11 +288,14 @@ const LandingPage = () => {
           </div>
         </motion.div>
       </section>
-
+      <div id="challenge-section">
+        <ChallengeOutcomeSection />
+      </div>
       <AIContactSection />
       <MusicPlayer />
       <Navbar />
       <SkipButton />
+      <SkipButton onSkip={handleSkip} />
     </main>
   );
 };
