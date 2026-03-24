@@ -16,7 +16,7 @@ const SkipButton: React.FC<SkipButtonProps> = ({ onSkip }) => {
                   position: fixed;
                   bottom: 20px;
                   right: 20px;
-                  z-index: 9999;
+                  z-index: 99;
                 }
 
                 .Btn {
@@ -36,7 +36,7 @@ const SkipButton: React.FC<SkipButtonProps> = ({ onSkip }) => {
                 }
 
                 .text {
-                  font-family: 'Segoe UI', sans-serif;
+                  font-family: 'Oxanium', sans-serif;
                   font-size: 12px;
                   font-weight: 500;
                   transition: all 0.3s ease;
