@@ -42,6 +42,7 @@ const LandingPage = () => {
   const runicApiRef = useRef<WebglRendererAPI | null>(null);
   const runicInitializedRef = useRef(false);
 
+  const [showNavLogo, setShowNavLogo] = useState(false);
   // track scroll progress for runic section to fade in overlay instead of scrolling
   const { scrollYProgress: runicScrollProgress } = useScroll({
     target: runicSectionRef,
@@ -163,6 +164,11 @@ const LandingPage = () => {
           } else {
             setS8BgOpacity(0);
           }
+          if (p > 0.83) {
+            setShowNavLogo(true);
+          } else {
+            setShowNavLogo(false);
+          }
         }
       });
 
@@ -248,22 +254,23 @@ const LandingPage = () => {
 
       <RippleBGSection />
 
+      {/* Video background for Runic/Services Section */}
+      <motion.div className="fixed inset-0 z-0 pointer-events-none" style={{ opacity: runicOpacity }}>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover opacity-60"
+          style={{ mixBlendMode: 'screen' }}
+        >
+          <source src={backgroundVideo} type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-black/40" />
+      </motion.div>
+
       <section id="RunicSection" ref={runicSectionRef} className="w-full h-screen overflow-hidden"
       >
-        <motion.div className="fixed inset-0 z-0 pointer-events-none" style={{ opacity: runicOpacity }}>
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover opacity-60"
-            style={{ mixBlendMode: 'screen' }}
-          >
-            <source src={backgroundVideo} type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-black/40" />
-        </motion.div>
-
         <motion.div
           className=" w-full h-[200vh] z-10 bg-cover bg-center relative"
           style={{
@@ -293,8 +300,7 @@ const LandingPage = () => {
       </div>
       <AIContactSection />
       <MusicPlayer />
-      <Navbar />
-      <SkipButton />
+      <Navbar showLogo={showNavLogo} />
       <SkipButton onSkip={handleSkip} />
     </main>
   );

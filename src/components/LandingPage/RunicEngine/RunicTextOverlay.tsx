@@ -84,7 +84,7 @@ function pickSubset(progress: number) {
 }
 
 function typedText(fullText: string, t: number) {
-  const pct = clamp01((t - 0.18) / 0.55);
+  const pct = clamp01((t - 0.18) / 0.2);
   const count = Math.floor(pct * fullText.length);
   return fullText.slice(0, count);
 }
@@ -115,7 +115,7 @@ export function RunicTextOverlay({
   const wrapperBlur = useMemo(() => {
     if (!subset) return 12;
     const inBlur = 1 - clamp01((localT - 0.05) / 0.25);
-    const outBlur = clamp01((localT - 0.82) / 0.18);
+    const outBlur = clamp01((localT - 0.85) / 0.20);
     return 12 * Math.max(inBlur, outBlur);
   }, [localT, subset]);
 
@@ -146,34 +146,34 @@ export function RunicTextOverlay({
       }}
     >
       <motion.div style={{ opacity: wrapperOpacity }} className="absolute inset-0">
-      {/* Paragraph 1 */}
-      <div className={`absolute ${quadrantClass(subset.paragraph1.position)} max-w-[min(30rem,32vw)]`}>
-        <div
-          className="font-oxanium text-[clamp(0.95rem,1.15vw,1.15rem)] tracking-[0.12em] text-white/90 "
-          style={{ filter: `blur(${p1Line1.blur}px)`, opacity: p1Line1.opacity }}
-        >
-          {subset.paragraph1.intro}
+        {/* Paragraph 1 */}
+        <div className={`absolute ${quadrantClass(subset.paragraph1.position)} max-w-[min(30rem,32vw)]`}>
+          <div
+            className="font-oxanium text-[clamp(0.95rem,1.15vw,1.15rem)] tracking-[0.12em] text-white/90 "
+            style={{ filter: `blur(${p1Line1.blur}px)`, opacity: p1Line1.opacity }}
+          >
+            {subset.paragraph1.intro}
+          </div>
+          <div
+            className="mt-3 whitespace-pre-line font-oxanium font-light leading-[0.95] text-[clamp(2.4rem,3.5vw,3rem)] tracking-[0.06em] text-white"
+            style={{ filter: `blur(${p1Line2.blur}px)`, opacity: p1Line2.opacity }}
+          >
+            {subset.paragraph1.impact}
+          </div>
         </div>
-        <div
-          className="mt-3 whitespace-pre-line font-oxanium font-light leading-[0.95] text-[clamp(2.4rem,3.5vw,3rem)] tracking-[0.06em] text-white"
-          style={{ filter: `blur(${p1Line2.blur}px)`, opacity: p1Line2.opacity }}
-        >
-          {subset.paragraph1.impact}
-        </div>
-      </div>
 
-      {/* Paragraph 2 */}
-      <div className={`absolute ${quadrantClass(subset.paragraph2.position)} max-w-[min(30rem,34vw)]`}>
-        <div
-          className="font-mono text-[clamp(0.72rem,0.9vw,0.9rem)] tracking-[0.28em] leading-relaxed text-white/80 whitespace-normal break-words "
-          style={{ opacity: p2Opacity, filter: `blur(${6 * (1 - p2Opacity)}px)` }}
-        >
-          {p2Text}
-          <span className="inline-block w-[0.6ch] align-baseline" style={{ opacity: localT < 0.78 ? 1 : 0 }}>
-            _
-          </span>
+        {/* Paragraph 2 */}
+        <div className={`absolute ${quadrantClass(subset.paragraph2.position)} max-w-[min(30rem,34vw)]`}>
+          <div
+            className="font-mono text-[clamp(0.72rem,0.9vw,0.9rem)] tracking-[0.28em] leading-relaxed text-white/80 whitespace-normal break-words "
+            style={{ opacity: p2Opacity, filter: `blur(${6 * (1 - p2Opacity)}px)` }}
+          >
+            {p2Text}
+            <span className="inline-block w-[0.6ch] align-baseline" style={{ opacity: localT < 0.78 ? 1 : 0 }}>
+              _
+            </span>
+          </div>
         </div>
-      </div>
       </motion.div>
     </motion.div>
   );

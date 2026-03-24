@@ -7,9 +7,9 @@ import { ChevronDown, X } from 'lucide-react';
 
 import logo from '../../assets/Backgrounds/logo.svg';
 
-const Navbar = () => {
+const Navbar = ({ showLogo }: { showLogo: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [expandedItem, setExpandedItem] = useState<string | null>("PRODUCTS");
+  const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
   const menuData = [
     {
@@ -49,15 +49,26 @@ const Navbar = () => {
     { name: "CONNECT", hasDropdown: false, path: "/connect" },
   ];
 
-  const closeMenu = () => setIsOpen(false);
+  const closeMenu = () => { setIsOpen(false); setExpandedItem(null); }
 
   return (
     <div className="font-['Oxanium']">
-      <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-4 md:p-6 pointer-events-none">
+      <nav className="fixed top-0 left-0 right-0 z-100 flex justify-between items-center p-4 md:p-6 pointer-events-none">
         <div className="pointer-events-auto">
-          <Link to="/" onClick={closeMenu}>
-            <img src={logo} alt="Logo" className="w-10 h-10" />
-          </Link>
+          <AnimatePresence>
+            {showLogo && (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+              >
+                <Link to="/" onClick={closeMenu}>
+                  <img src={logo} alt="Logo" className="w-10 h-10" />
+                </Link>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {!isOpen && (
@@ -88,8 +99,7 @@ const Navbar = () => {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed top-0 right-0 h-screen w-full sm:w-[350px] bg-black z-[70] flex flex-col shadow-2xl border-l border-white/5"
-            >
+              className="fixed top-0 right-0 h-screen w-full sm:w-[450px] bg-black z-[100] flex flex-col shadow-2xl border-l border-white/5"            >
               <div className="p-10 flex justify-end">
                 <button onClick={closeMenu} className="text-white hover:text-blue-400 transition-colors">
                   <X size={32} strokeWidth={1.5} />
@@ -105,7 +115,7 @@ const Navbar = () => {
                         onClick={() => item.hasDropdown ? setExpandedItem(expandedItem === item.name ? null : item.name) : null}
                       >
                         {item.hasDropdown ? (
-                          <span className={`text-[22px] font-bold tracking-[0.1em] transition-colors uppercase 
+                          <span className={`text-[22px] font-mid tracking-[0.1em] transition-colors uppercase 
                             ${expandedItem === item.name ? 'text-blue-400' : 'text-white/90 group-hover:text-blue-400'}`}>
                             {item.name}
                           </span>
@@ -113,7 +123,7 @@ const Navbar = () => {
                           <Link
                             to={item.path || "#"}
                             onClick={closeMenu}
-                            className="text-[24px] font-bold tracking-[0.1em] text-white/90 hover:text-blue-400 transition-colors uppercase"
+                            className="text-[24px] font-mid tracking-[0.1em] text-white/90 hover:text-blue-400 transition-colors uppercase"
                           >
                             {item.name}
                           </Link>
