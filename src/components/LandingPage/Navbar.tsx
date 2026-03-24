@@ -65,9 +65,9 @@ const Navbar = () => {
             onClick={() => setIsOpen(true)}
             className="group flex flex-col gap-1.5 items-end pointer-events-auto focus:outline-none"
           >
-            <div className="w-10 h-[2px] bg-white rounded-full" />
-            <div className="w-8 h-[2px] bg-white rounded-full transition-all group-hover:w-10" />
-            <div className="w-6 h-[2px] bg-white rounded-full transition-all group-hover:w-10" />
+            <div className="w-10 h-[4px] bg-white rounded-full" />
+            <div className="w-8 h-[4px] bg-white rounded-full transition-all group-hover:w-10" />
+            <div className="w-6 h-[4px] bg-white rounded-full transition-all group-hover:w-10" />
           </button>
         )}
       </nav>

@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import NeuralNetworkBackground from './NeuralNetworkBackground';
+import backgroundImage from '../../assets/Backgrounds/new-services-bg3.jpg';
 
 const ChallengeOutcomeSection = () => {
     return (
@@ -15,7 +16,7 @@ const ChallengeOutcomeSection = () => {
             <div
                 className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none"
                 style={{
-                    backgroundImage: 'url("/new-services-bg3.jpg")',
+                    backgroundImage: `url(${backgroundImage})`,
                     mixBlendMode: 'screen'
                 }}
             >
