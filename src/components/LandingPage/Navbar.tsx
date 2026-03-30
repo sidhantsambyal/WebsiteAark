@@ -53,7 +53,7 @@ const Navbar = ({ showLogo }: { showLogo: boolean }) => {
 
   return (
     <div className="font-['Oxanium']">
-      <nav className="fixed top-0 left-0 right-0 z-100 flex justify-between items-center p-4 md:p-6 pointer-events-none">
+      <nav className="fixed top-0 left-0 right-0 z-[100] flex justify-between items-center p-4 md:p-6 pointer-events-none">
         <div className="pointer-events-auto">
           <AnimatePresence>
             {showLogo && (
@@ -106,7 +106,7 @@ const Navbar = ({ showLogo }: { showLogo: boolean }) => {
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto px-12 pb-10">
+              <div className="flex-1 overflow-y-auto px-12 pb-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:display-none">
                 <div className="flex flex-col gap-6">
                   {menuData.map((item) => (
                     <div key={item.name} className="flex flex-col">
