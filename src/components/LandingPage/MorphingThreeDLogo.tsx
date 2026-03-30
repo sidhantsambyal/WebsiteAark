@@ -47,10 +47,10 @@ export default function MorphingThreeDLogo({ progress }: MorphingLogoProps) {
 
     // ─── MATERIALS ─────────────────────────────────────────────────
     const solidMaterial = new THREE.MeshStandardMaterial({
-      color: 0xffffff, 
-      transparent: true, 
-      opacity: 1.0, 
-      metalness: 0.5, 
+      color: 0xffffff,
+      transparent: true,
+      opacity: 1.0,
+      metalness: 0.5,
       roughness: 0.2
     });
     solidMaterialRef.current = solidMaterial;
@@ -76,7 +76,7 @@ export default function MorphingThreeDLogo({ progress }: MorphingLogoProps) {
           const count = 1500; // Increased count for a denser "dust" effect
           const pos = new Float32Array(count * 3);
           const tempV = new THREE.Vector3();
-          
+
           for (let i = 0; i < count; i++) {
             sampler.sample(tempV);
             pos[i * 3] = tempV.x;
@@ -86,14 +86,14 @@ export default function MorphingThreeDLogo({ progress }: MorphingLogoProps) {
 
           const pointsGeo = new THREE.BufferGeometry();
           pointsGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-          
-          const pMat = new THREE.PointsMaterial({ 
-            color: 0xffffff, 
-            size: 1.5, 
-            transparent: true, 
-            opacity: 0 
+
+          const pMat = new THREE.PointsMaterial({
+            color: 0xffffff,
+            size: 1.5,
+            transparent: true,
+            opacity: 0
           });
-          
+
           const points = new THREE.Points(pointsGeo, pMat);
           tempGroup.add(points);
         });
@@ -111,7 +111,7 @@ export default function MorphingThreeDLogo({ progress }: MorphingLogoProps) {
       });
 
       logoGroup.add(...tempGroup.children);
-      
+
       // Flip the SVG coordinate system
       logoGroup.rotation.z = Math.PI;
 
@@ -136,10 +136,10 @@ export default function MorphingThreeDLogo({ progress }: MorphingLogoProps) {
 
       // 1. Solid Mesh Fade-Out (Starts exactly at 0.15 with the text)
       const sOpacity = THREE.MathUtils.clamp(
-        THREE.MathUtils.mapLinear(p, 0.15, 0.35, 1, 0), 
+        THREE.MathUtils.mapLinear(p, 0.15, 0.35, 1, 0),
         0, 1
       );
-      
+
       if (solidMaterialRef.current) {
         solidMaterialRef.current.opacity = sOpacity;
         solidMaterialRef.current.visible = sOpacity > 0.01;
@@ -147,14 +147,14 @@ export default function MorphingThreeDLogo({ progress }: MorphingLogoProps) {
 
       // 2. Point Cloud Fade-In (Overlaps the solid fade for a smooth morph)
       let pOpacity = THREE.MathUtils.clamp(
-        THREE.MathUtils.mapLinear(p, 0.2, 0.4, 0, 1), 
+        THREE.MathUtils.mapLinear(p, 0.2, 0.4, 0, 1),
         0, 1
       );
-      
+
       // 3. Point Cloud Exit (Fades out when approaching the Runic/Galaxy transition)
-      if (p > 0.75) {
+      if (p > 0.55) {
         pOpacity *= THREE.MathUtils.clamp(
-          THREE.MathUtils.mapLinear(p, 0.75, 0.85, 1, 0), 
+          THREE.MathUtils.mapLinear(p, 0.55, 0.65, 1, 0),
           0, 1
         );
       }
@@ -163,7 +163,7 @@ export default function MorphingThreeDLogo({ progress }: MorphingLogoProps) {
         if (child instanceof THREE.Points) {
           (child.material as THREE.PointsMaterial).opacity = pOpacity;
           child.visible = pOpacity > 0.01;
-          
+
           // Optional: Add subtle particle jitter as they morph
           child.rotation.y = Math.sin(t * 0.5) * 0.1;
         }

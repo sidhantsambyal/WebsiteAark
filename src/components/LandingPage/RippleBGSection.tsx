@@ -1,82 +1,91 @@
 "use client";
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
+import gsap from 'gsap';
 
-const RippleBGSection = () => {
+const RippleBGSection = ({ progress }: { progress: number }) => {
   const line1 = "We design, build, test, and deliver engineering-led solutions";
-  const line2 = "taking full responsibility from concept to market";
+  const line2 = "Taking full responsibility from concept to market";
+
+  // LINE 1 LOGIC: 
+  // In: 0.45 -> 0.55 | Out: 0.70 -> 0.80
+  const opacity1 = useMemo(() => {
+    if (progress < 0.45 || progress > 0.80) return 0;
+
+    const fadeIn = gsap.utils.mapRange(0.65, 0.75, 0, 1, progress);
+    const fadeOut = gsap.utils.mapRange(0.75, 0.85, 1, 0, progress);
+
+    return Math.min(fadeIn, fadeOut);
+  }, [progress]);
+
+  // LINE 2 LOGIC: 
+  // In: 0.75 -> 0.85 | Out: 0.95 -> 1.0
+  const opacity2 = useMemo(() => {
+    if (progress < 0.75 || progress > 1.0) return 0;
+
+    const fadeIn = gsap.utils.mapRange(0.85, 0.95, 0, 1, progress);
+    const fadeOut = gsap.utils.mapRange(0.95, 1.0, 1, 0, progress);
+
+    return Math.min(fadeIn, fadeOut);
+  }, [progress]);
+
+  // Dynamic scaling based on progress for a "zooming" feel
+  const scale1 = useMemo(() => 1 + (progress - 0.45) * 0.1, [progress]);
+  const scale2 = useMemo(() => 0.95 + (progress - 0.75) * 0.05, [progress]);
 
   const letterVariants = {
-    hidden: (i: number) => ({
-      opacity: 0,
-      x: i % 2 === 0 ? (i % 4 === 0 ? -100 : 100) : 0,
-      y: i % 2 !== 0 ? (i % 3 === 0 ? -100 : 100) : 0,
-      filter: "blur(12px)",
-      scale: 0.8,
-    }),
+    hidden: { opacity: 0, filter: "blur(4px)" },
     visible: (i: number) => ({
       opacity: 1,
-      x: 0,
-      y: 0,
       filter: "blur(0px)",
-      scale: 1,
-      transition: {
-        delay: i * 0.02,
-        duration: 0.9,
-        ease: [0.16, 1, 0.3, 1],
-      },
+      transition: { delay: i * 0.01, duration: 0.3 }
     }),
   };
 
-  // Helper to render the animated text
-  const AnimatedText = ({ text, delayOffset = 0 }: { text: string; delayOffset?: number }) => (
-    <h2 className="text-2xl md:text-3xl font-oxanium font-light tracking-[0.15em] text-white uppercase leading-relaxed flex flex-wrap justify-center">
+  const renderText = (text: string, isVisible: boolean) => (
+    <h2 className="text-2xl md:text-3xl font-oxanium font-light tracking-[0.2em] text-white uppercase leading-relaxed flex flex-wrap justify-center">
       {text.split(" ").map((word, wIdx) => (
         <span key={wIdx} className="inline-flex mr-3 mb-2">
-          {word.split("").map((char, cIdx) => {
-            // Unique index for staggered delay
-            const charIndex = wIdx * 5 + cIdx + delayOffset;
-            return (
-              <motion.span
-                key={cIdx}
-                custom={charIndex}
-                variants={letterVariants}
-                initial="hidden"
-                whileInView="visible"
-                // 'once: false' allows re-triggering on scroll back
-                // 'amount: 0.2' ensures it triggers even if the whole line isn't visible
-                // 'margin' starts the animation slightly before it enters the viewport
-                viewport={{ once: false, amount: 0.2, margin: "-5% 0px -5% 0px" }}
-              >
-                {char}
-              </motion.span>
-            );
-          })}
+          {word.split("").map((char, cIdx) => (
+            <motion.span
+              key={cIdx}
+              custom={wIdx * 5 + cIdx}
+              variants={letterVariants}
+              initial="hidden"
+              animate={isVisible ? "visible" : "hidden"}
+            >
+              {char}
+            </motion.span>
+          ))}
         </span>
       ))}
     </h2>
   );
 
   return (
-    <section className="relative w-full ">
-      {/* First Heading Section */}
-      <div className="relative h-screen w-full flex items-center justify-center p-8">
-        <div className="text-center max-w-4xl">
-          <AnimatedText text={line1} />
-        </div>
-      </div>
+    <div className="fixed inset-0 pointer-events-none z-40 flex items-center justify-center p-8">
+      <div className="relative max-w-5xl w-full flex items-center justify-center">
 
-      {/* Second Heading Section */}
-      <div className="relative h-screen w-full flex items-center justify-center p-8">
-        <div className="text-center max-w-3xl">
-          <AnimatedText text={line2} delayOffset={20} />
-        </div>
+        {/* Line 1 Wrapper */}
+        <motion.div
+          style={{ opacity: opacity1, scale: scale1 }}
+          className="relative z-10 text-center w-full"
+        >
+          {renderText(line1, progress > 0.45 && progress < 0.80)}
+        </motion.div>
+
+        {/* Line 2 Wrapper */}
+        <motion.div
+          style={{ opacity: opacity2, scale: scale2 }}
+          className="absolute inset-0 z-20 flex items-center justify-center text-center w-full"
+        >
+          {renderText(line2, progress > 0.75)}
+        </motion.div>
+
       </div>
-    </section>
+    </div>
   );
 };
 
 export default RippleBGSection;
-
-// 1

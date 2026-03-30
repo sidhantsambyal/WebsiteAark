@@ -99,13 +99,13 @@ const LandingPage = () => {
           const p = self.progress;
           setTransformationProgress(p);
 
-          if (p > 0.65) {
-            setBgExitOpacity(gsap.utils.mapRange(0.65, 0.95, 1, 0, p));
+          if (p > 0.45) {
+            setBgExitOpacity(gsap.utils.mapRange(0.45, 0.60, 1, 0, p));
           } else setBgExitOpacity(1);
 
 
-          if (p > 0.75) {
-            setS8BgOpacity(gsap.utils.mapRange(0.75, 1.0, 0, 1, p));
+          if (p > 0.55) {
+            setS8BgOpacity(gsap.utils.mapRange(0.50, 1.0, 0, 1, p));
           } else setS8BgOpacity(0);
 
           setShowNavLogo(p > 0.6);
@@ -176,8 +176,9 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section id="RippleSectionWrapper" className="relative">
-        <RippleBGSection />
+      <section id="RippleSectionWrapper" className="relative z-40">
+        {/* Pass the current scroll progress (0 to 1) to the component */}
+        <RippleBGSection progress={transformationProgress} />
       </section>
 
       <section id="RunicSection" ref={runicSectionRef} className="w-full h-screen overflow-hidden bg-transparent">
