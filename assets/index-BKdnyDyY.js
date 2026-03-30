@@ -4675,7 +4675,7 @@ vec3 getVarporPosition() {\r
   float piMultiplier = mod(1.0 + u_time * 0.0025 * pow(vRand, 2.0), 0.5);\r
   float progress = sin(3.1415926 * piMultiplier);\r
 \r
-  float x = vStaticNoise * 500.0;\r
+  float x = vStaticNoise * 200.0;\r
   float y = 0.0;\r
   float z = 600.0 * progress * direction;\r
 \r
@@ -4699,10 +4699,10 @@ void main() {\r
   vec3 transformed = vec3(position);\r
 \r
   // add volume\r
-  transformed.z += vStaticNoise * 20.0 + mapAlpha * vRand * 20.0;\r
+  transformed.z += vStaticNoise * 10.0 + mapAlpha * vRand * 10.0;\r
 \r
   // add noise\r
-  transformed.xy += vStaticNoise * 5.0;\r
+  transformed.xy += vStaticNoise;\r
 \r
   // add in-rotation\r
   vec3 inRotation = getRotationPosition(inProgress);\r
