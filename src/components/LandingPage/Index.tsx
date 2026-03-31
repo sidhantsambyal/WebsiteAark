@@ -21,10 +21,8 @@ import platform from '../../assets/Runic-PNGs/Platform.png';
 import product from '../../assets/Runic-PNGs/Product.png';
 import semiconductor from '../../assets/Runic-PNGs/semiconductor.png';
 import software from '../../assets/Runic-PNGs/Software.png';
-import backgroundImage from '../../assets/Backgrounds/new-services-bg3.jpg';
 import backgroundVideo from '../../assets/Backgrounds/Section4and5.mp4';
 import homePageBg from '../../assets/Backgrounds/HomepageBG.jpg';
-import S8 from '../../assets/Backgrounds/S8.jpg';
 import blacktransparent from "../../assets/Runic-PNGs/blank-transparent.png"
 import ScrollDown from './scrolldown';
 
@@ -41,7 +39,6 @@ const LandingPage = () => {
   const [showNavLogo, setShowNavLogo] = useState(false);
   const [isScrollDownVisible, setIsScrollDownVisible] = useState(true);
   const [bgExitOpacity, setBgExitOpacity] = useState(1);
-  const [s8BgOpacity, setS8BgOpacity] = useState(0);
   const [s2Value, setS2Value] = useState(0);
   const [transformationProgress, setTransformationProgress] = useState(0);
   const [carouselProgress, setCarouselProgress] = useState(0);
@@ -77,13 +74,21 @@ const LandingPage = () => {
 
   const smoothScatter = useSpring(scatterScroll, { stiffness: 45, damping: 25 });
   const bg1Opacity = useTransform(smoothScatter, [0.4, 0.85], [1, 0]);
-  const bg2InitialOpacity = useTransform(smoothScatter, [0.6, 0.95], [0, 1]);
+  // const bg2InitialOpacity = useTransform(smoothScatter, [0.6, 0.95], [0, 1]);
 
   const { scrollYProgress: runicFadeProgress } = useScroll({
     target: runicSectionRef,
     offset: ["start end", "start start"]
   });
+
+  // This tracks 0 (top of page) to 1 (bottom of page)
+  const { scrollYProgress: globalScroll } = useScroll();
+
+  const videoOpacity = useTransform(globalScroll, [0, 0.15, 1], [0, 1, 1]);
+
+
   const runicOpacity = useTransform(runicFadeProgress, [0.5, 0.95], [0, 1]);
+  const [runicExitOpacity, setRunicExitOpacity] = useState(1);
 
   useMotionValueEvent(smoothScatter, "change", setS2Value);
 
@@ -92,23 +97,18 @@ const LandingPage = () => {
       ScrollTrigger.create({
         trigger: section2Ref.current,
         start: "top top",
-        end: "+=500%", // CHANGE: Reduced from 800% to 500% to make the whole section faster
+        end: "+=300%", // CHANGE: Reduced from 800% to 500% to make the whole section faster
         pin: true,
         scrub: 0.5, // CHANGE: Slightly higher scrub (0.5) makes it feel "heavier" and smoother for short scrolls
         onUpdate: (self) => {
           const p = self.progress;
           setTransformationProgress(p);
 
-          if (p > 0.45) {
-            setBgExitOpacity(gsap.utils.mapRange(0.45, 0.60, 1, 0, p));
-          } else setBgExitOpacity(1);
+          // if (p > 0.40) {
+          //   setBgExitOpacity(gsap.utils.mapRange(0.40, 0.42, 1, 0, p));
+          // } else setBgExitOpacity(1);
 
-
-          if (p > 0.55) {
-            setS8BgOpacity(gsap.utils.mapRange(0.50, 1.0, 0, 1, p));
-          } else setS8BgOpacity(0);
-
-          setShowNavLogo(p > 0.6);
+          setShowNavLogo(p > 0.4);
         }
       });
 
@@ -118,14 +118,22 @@ const LandingPage = () => {
         ScrollTrigger.create({
           trigger: runicSectionRef.current,
           start: "top top",
-          end: () => `+=${maxProgress * 2200}`,
+          end: () => `+=${maxProgress * 1000}`,
           pin: true,
           pinSpacing: true,
           scrub: 0.5,
           onUpdate: (self) => {
-            const currentP = self.progress * maxProgress;
+            const p = self.progress;
+            const currentP = p * maxProgress;
             api.updateProgress?.(currentP);
             setCarouselProgress(currentP);
+            // Start fading out when we reach 98% of the pinned scroll
+            if (p > 0.98) {
+              const fade = gsap.utils.mapRange(0.98, 1.0, 1, 0, p);
+              setRunicExitOpacity(fade);
+            } else {
+              setRunicExitOpacity(1);
+            }
           }
         });
       }
@@ -143,23 +151,21 @@ const LandingPage = () => {
     <main ref={containerRef} className="relative bg-[#050508] text-white overflow-x-hidden">
       <div className="fixed inset-0 z-0 pointer-events-none">
         <motion.div className="absolute inset-0 bg-cover bg-center" style={{ opacity: bg1Opacity, backgroundImage: `url(${homePageBg})` }} />
-        <motion.div
+        {/* <motion.div
           className="absolute inset-0 bg-cover bg-center"
           style={{
             opacity: useTransform(bg2InitialOpacity, (v) => v * bgExitOpacity),
-            backgroundImage: `url(${backgroundImage})`,
             mixBlendMode: 'screen'
           }}
-        />
+        /> */}
         <motion.div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ opacity: s8BgOpacity, backgroundImage: `url(${S8})`, mixBlendMode: 'screen' }}
         />
-        <motion.div className="absolute inset-0" style={{ opacity: runicOpacity }}>
-          <video autoPlay loop muted playsInline className="w-full h-full object-cover opacity-60" style={{ mixBlendMode: 'screen' }}>
+        <motion.div className="absolute inset-0" style={{ opacity: videoOpacity }}>
+          <video autoPlay loop muted playsInline className="w-full h-full object-cover " style={{ mixBlendMode: 'screen' }}>
             <source src={backgroundVideo} type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 " />
         </motion.div>
       </div>
 
@@ -176,13 +182,13 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section id="RippleSectionWrapper" className="relative z-40">
+      <section id="RippleSectionWrapper" className="relative ">
         {/* Pass the current scroll progress (0 to 1) to the component */}
         <RippleBGSection progress={transformationProgress} />
       </section>
 
       <section id="RunicSection" ref={runicSectionRef} className="w-full h-screen overflow-hidden bg-transparent">
-        <motion.div className="w-full h-[200vh] relative z-10" style={{ opacity: runicOpacity }}>
+        <motion.div className="w-full h-[200vh] relative z-10" style={{ opacity: useTransform(runicOpacity, (v) => v * runicExitOpacity) }}>
           <div className="sticky top-0 w-full h-screen">
             <RunicRenderer
               assetPaths={runicAssets}
@@ -198,7 +204,7 @@ const LandingPage = () => {
         </motion.div>
       </section>
 
-      <div id="challenge-section" className="relative z-10 bg-transparent">
+      <div id="challenge-section" className="relative bg-transparent z-[100]">
         <ChallengeOutcomeSection />
       </div>
 

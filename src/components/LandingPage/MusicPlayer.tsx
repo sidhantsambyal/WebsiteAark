@@ -6,6 +6,11 @@ const MusicPlayer = () => {
 
   const audioSrc = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
 
+  // Coordinates for the "Dead" flat line (remains for the transition morph)
+  const flatPath = "M 0 14 L 50 14 L 100 14 L 150 14 L 200 14 L 250 14 L 300 14";
+  // Coordinates for the "Live" sine wave
+  const wavePath = "M 0 14 C 12.5 0, 37.5 28, 50 14 C 62.5 0, 87.5 28, 100 14 C 112.5 0, 137.5 28, 150 14 C 162.5 0, 187.5 28, 200 14 C 212.5 0, 237.5 28, 250 14 C 262.5 0, 287.5 28, 300 14";
+
   const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
@@ -22,6 +27,19 @@ const MusicPlayer = () => {
       <audio ref={audioRef} src={audioSrc} loop />
 
       <button className="MusicBtn" onClick={togglePlay}>
+        <div className="wave-wrapper">
+          <svg width="300%" height="100%" viewBox="0 0 300 28" preserveAspectRatio="none">
+            <path
+              className={`line-path ${isPlaying ? 'animating' : ''}`}
+              d={isPlaying ? wavePath : flatPath}
+              fill="none"
+              stroke="rgba(157, 177, 204, 0.5)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        </div>
+
         <span className="text">{isPlaying ? 'Pause' : 'Play'}</span>
       </button>
 
@@ -29,7 +47,6 @@ const MusicPlayer = () => {
         .music-container {
           position: fixed;
           bottom: 20px;
-          /* Placed at 105px from right (20px skip offset + 75px skip width + 10px gap) */
           right: 105px; 
           z-index: 99;
         }
@@ -41,8 +58,7 @@ const MusicPlayer = () => {
           justify-content: center;
           width: 75px;
           height: 28px;
-          background-color: #0d2a54;
-          color: #ffffff;
+          background: transparent;
           border: 1px solid #9db1cc;
           border-radius: 20px;
           cursor: pointer;
@@ -50,20 +66,48 @@ const MusicPlayer = () => {
           overflow: hidden;
         }
 
+        .wave-wrapper {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          pointer-events: none;
+        }
+
+        .line-path {
+          /* Added opacity: 0 to hide the flat line */
+          opacity: 0;
+          transition: d 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+        }
+
+        /* Show the line and start animation when playing */
+        .line-path.animating {
+          opacity: 1;
+          animation: wave-slide 3s linear infinite;
+        }
+
+        @keyframes wave-slide {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-16.66%); }
+        }
+
         .text {
+          position: relative;
           font-family: 'Oxanium', sans-serif;
-          font-size: 12px;
+          font-size: 11px;
           font-weight: 500;
-          transition: all 0.3s ease;
+          color: #ffffff;
+          z-index: 10;
+          pointer-events: none;
+          text-shadow: 0 0 3px rgba(0,0,0,0.4);
         }
 
         .MusicBtn:hover {
-          background-color: #163a6e;
           border-color: #ffffff;
-        }
-
-        .MusicBtn:active {
-          transform: scale(0.95);
+          background-color: rgba(255, 255, 255, 0.05);
         }
       `}</style>
     </div>

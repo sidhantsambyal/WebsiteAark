@@ -136,7 +136,7 @@ export default function MorphingThreeDLogo({ progress }: MorphingLogoProps) {
 
       // 1. Solid Mesh Fade-Out (Starts exactly at 0.15 with the text)
       const sOpacity = THREE.MathUtils.clamp(
-        THREE.MathUtils.mapLinear(p, 0.15, 0.35, 1, 0),
+        THREE.MathUtils.mapLinear(p, 0.15, 0.22, 1, 0),
         0, 1
       );
 
@@ -147,14 +147,14 @@ export default function MorphingThreeDLogo({ progress }: MorphingLogoProps) {
 
       // 2. Point Cloud Fade-In (Overlaps the solid fade for a smooth morph)
       let pOpacity = THREE.MathUtils.clamp(
-        THREE.MathUtils.mapLinear(p, 0.2, 0.4, 0, 1),
+        THREE.MathUtils.mapLinear(p, 0.2, 0.3, 0, 1),
         0, 1
       );
 
       // 3. Point Cloud Exit (Fades out when approaching the Runic/Galaxy transition)
-      if (p > 0.55) {
+      if (p > 0.32) {
         pOpacity *= THREE.MathUtils.clamp(
-          THREE.MathUtils.mapLinear(p, 0.55, 0.65, 1, 0),
+          THREE.MathUtils.mapLinear(p, 0.32, 0.40, 1, 0),
           0, 1
         );
       }

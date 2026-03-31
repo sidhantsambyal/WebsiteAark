@@ -1,84 +1,75 @@
 "use client";
 
 import React, { useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 
 const RippleBGSection = ({ progress }: { progress: number }) => {
   const line1 = "We design, build, test, and deliver engineering-led solutions";
   const line2 = "Taking full responsibility from concept to market";
 
-  // LINE 1 LOGIC: 
-  // In: 0.45 -> 0.55 | Out: 0.70 -> 0.80
+  // Common Typography Classes
+  // Ensure "font-oxanium" is defined in your tailwind.config.js 
+  const textStyles = "text-2xl md:text-3xl font-oxanium font-light tracking-[0.15em] text-white uppercase leading-tight text-center";
+
+  // LINE 1 LOGIC: In: 0.45 -> 0.55 | Out: 0.70 -> 0.80
   const opacity1 = useMemo(() => {
-    if (progress < 0.45 || progress > 0.80) return 0;
-
-    const fadeIn = gsap.utils.mapRange(0.65, 0.75, 0, 1, progress);
-    const fadeOut = gsap.utils.mapRange(0.75, 0.85, 1, 0, progress);
-
+    if (progress < 0.40 || progress > 0.80) return 0;
+    const fadeIn = gsap.utils.mapRange(0.45, 0.55, 0, 1, progress);
+    const fadeOut = gsap.utils.mapRange(0.70, 0.80, 1, 0, progress);
     return Math.min(fadeIn, fadeOut);
   }, [progress]);
 
-  // LINE 2 LOGIC: 
-  // In: 0.75 -> 0.85 | Out: 0.95 -> 1.0
+  // LINE 2 LOGIC: In: 0.75 -> 0.85 | Out: 0.95 -> 1.0
   const opacity2 = useMemo(() => {
     if (progress < 0.75 || progress > 1.0) return 0;
-
-    const fadeIn = gsap.utils.mapRange(0.85, 0.95, 0, 1, progress);
+    const fadeIn = gsap.utils.mapRange(0.75, 0.85, 0, 1, progress);
     const fadeOut = gsap.utils.mapRange(0.95, 1.0, 1, 0, progress);
-
     return Math.min(fadeIn, fadeOut);
   }, [progress]);
 
-  // Dynamic scaling based on progress for a "zooming" feel
-  const scale1 = useMemo(() => 1 + (progress - 0.45) * 0.1, [progress]);
-  const scale2 = useMemo(() => 0.95 + (progress - 0.75) * 0.05, [progress]);
+  const scale1 = useMemo(() => 1 + (progress - 0.45) * 0.05, [progress]);
+  const scale2 = useMemo(() => 1 + (progress - 0.75) * 0.05, [progress]);
 
-  const letterVariants = {
-    hidden: { opacity: 0, filter: "blur(4px)" },
-    visible: (i: number) => ({
-      opacity: 1,
-      filter: "blur(0px)",
-      transition: { delay: i * 0.01, duration: 0.3 }
-    }),
-  };
-
-  const renderText = (text: string, isVisible: boolean) => (
-    <h2 className="text-2xl md:text-3xl font-oxanium font-light tracking-[0.2em] text-white uppercase leading-relaxed flex flex-wrap justify-center">
+  const renderText = (text: string, isActive: boolean) => (
+    <div className="flex flex-wrap justify-center max-w-3xl">
       {text.split(" ").map((word, wIdx) => (
-        <span key={wIdx} className="inline-flex mr-3 mb-2">
+        <span key={wIdx} className="inline-flex mx-[0.25em] whitespace-nowrap">
           {word.split("").map((char, cIdx) => (
             <motion.span
               key={cIdx}
-              custom={wIdx * 5 + cIdx}
-              variants={letterVariants}
-              initial="hidden"
-              animate={isVisible ? "visible" : "hidden"}
+              initial={{ opacity: 0, y: 10 }}
+              animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
+              transition={{
+                delay: isActive ? (wIdx * 5 + cIdx) * 0.01 : 0,
+                duration: 0.4,
+                ease: "easeOut"
+              }}
             >
               {char}
             </motion.span>
           ))}
         </span>
       ))}
-    </h2>
+    </div>
   );
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-40 flex items-center justify-center p-8">
-      <div className="relative max-w-5xl w-full flex items-center justify-center">
+    <div className="fixed inset-0 pointer-events-none z-40 flex items-center justify-center p-6">
+      <div className="relative w-full flex items-center justify-center">
 
-        {/* Line 1 Wrapper */}
+        {/* Line 1 */}
         <motion.div
           style={{ opacity: opacity1, scale: scale1 }}
-          className="relative z-10 text-center w-full"
+          className={`${textStyles} absolute`}
         >
-          {renderText(line1, progress > 0.45 && progress < 0.80)}
+          {renderText(line1, progress > 0.45 && progress < 0.75)}
         </motion.div>
 
-        {/* Line 2 Wrapper */}
+        {/* Line 2 */}
         <motion.div
           style={{ opacity: opacity2, scale: scale2 }}
-          className="absolute inset-0 z-20 flex items-center justify-center text-center w-full"
+          className={`${textStyles} absolute`}
         >
           {renderText(line2, progress > 0.75)}
         </motion.div>

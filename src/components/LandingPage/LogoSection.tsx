@@ -15,14 +15,10 @@ const LogoSection: React.FC<LogoSectionProps> = ({ scatter, progress }) => {
   const uiOpacity = Math.max(0, (scatter - 0.2) * 2);
 
   const getVisibleStatus = (index: number) => {
-    // Text reveal finishes by 0.15
-    const triggerPoint = (index / fullText.length) * 0.15; 
+    const isLine1 = index < line1.length;
+    const triggerPoint = isLine1 ? 0 : ((index - line1.length) / line2.length) * 0.15;
     const isVisible = progress >= triggerPoint;
-
-    // CHANGE: Text starts fading out at 0.15 (exactly when logo starts morphing)
-    // It will be completely gone by 0.25
     const fadeOut = progress > 0.15 ? Math.max(0, 1 - (progress - 0.15) * 10) : 1;
-    
     return isVisible ? 1 * fadeOut : 0;
   };
 
@@ -35,7 +31,6 @@ const LogoSection: React.FC<LogoSectionProps> = ({ scatter, progress }) => {
           opacity: getVisibleStatus(startIndex + i),
           display: "inline-block",
           whiteSpace: char === " " ? "pre" : "normal",
-          // Subtle blur-out as it fades
           filter: `blur(${progress > 0.15 ? (progress - 0.15) * 40 : 0}px)`,
           transform: `translateY(${progress > 0.15 ? (progress - 0.15) * -20 : 0}px)`
         }}
@@ -46,8 +41,8 @@ const LogoSection: React.FC<LogoSectionProps> = ({ scatter, progress }) => {
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center bg-transparent">
-      <div className="flex-1 flex items-center justify-center w-full">
+    <div className="relative w-full h-full flex flex-col items-center justify-center bg-transparent gap-4">
+      <div className="flex items-center justify-center w-full">
         <motion.div
           animate={{
             opacity: uiOpacity,
@@ -59,7 +54,8 @@ const LogoSection: React.FC<LogoSectionProps> = ({ scatter, progress }) => {
         </motion.div>
       </div>
 
-      <div className="text-center h-24 flex-shrink-0 px-4 mb-10">
+      {/* Removed 'mb-10' to bring it closer to the logo */}
+      <div className="text-center px-4">
         <h1 className="text-xl sm:text-2xl md:text-3xl font-oxanium font-light tracking-widest text-white uppercase leading-tight select-none">
           <div className="block">{renderLine(line1, 0)}</div>
           <div className="h-2" />
