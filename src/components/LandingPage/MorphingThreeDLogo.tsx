@@ -88,7 +88,7 @@ export default function MorphingThreeDLogo({ progress }: MorphingLogoProps) {
           pointsGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
 
           const pMat = new THREE.PointsMaterial({
-            color: 0xffffff,
+            color: 0x87ceeb,
             size: 1.5,
             transparent: true,
             opacity: 0

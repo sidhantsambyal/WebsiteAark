@@ -17,7 +17,7 @@ const ChallengeOutcomeSection: React.FC<ChallengeOutcomeSectionProps> = () => {
   // CHANGE: Added scroll tracking to drive the "Scatter" effect
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start end", "center center"] 
+    offset: ["start end", "center center"]
   });
 
   // Map scroll progress (0 to 1) to scatter values (0.3 down to 0)
@@ -47,13 +47,13 @@ const ChallengeOutcomeSection: React.FC<ChallengeOutcomeSectionProps> = () => {
       {/* CHANGE: Simplified container to 'inset-0' to ensure perfect centering 
           matching the main Landing Page blob position */}
       <div className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center opacity-60">
-         <NeuralNetworkBackground scatter={scatterVal} showText={false} />
+        <NeuralNetworkBackground scatter={scatterVal} showText={false} />
       </div>
 
       {/* ─── 2. CONTENT LAYER ─── */}
       {/* CHANGE: Unified font-family and narrowed max-width for better readability */}
       <div className="relative z-10 w-full max-w-5xl px-6 flex flex-col items-center text-center font-['Oxanium']">
-        
+
         <motion.h2
           initial={{ opacity: 0, y: 30, filter: "blur(12px)" }}
           whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -90,8 +90,7 @@ const ChallengeOutcomeSection: React.FC<ChallengeOutcomeSectionProps> = () => {
           transition={{ delay: 0.6, duration: 0.8 }}
           whileHover={{ backgroundColor: "#073766", scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="px-12 py-4 border border-white/20 rounded-full bg-[#0d345a] text-white text-xs sm:text-sm tracking-[0.2em] uppercase font-medium pointer-events-auto transition-all duration-300"
-        >
+          className="mb-[0] pl-6 pr-5 pt-4 pb-3 border border-white/20 rounded-full bg-[#0d345a] text-white text-xs sm:text-sm tracking-[0.2em] uppercase font-medium pointer-events-auto transition-all duration-300 flex items-center justify-center"        >
           Start Conversation
         </motion.button>
       </div>

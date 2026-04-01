@@ -204,7 +204,7 @@ const LandingPage = () => {
         </motion.div>
       </section>
 
-      <div id="challenge-section" className="relative bg-transparent z-[100]">
+      <div id="challenge-section" className="relative bg-transparent z-[10]">
         <ChallengeOutcomeSection />
       </div>
 
