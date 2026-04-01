@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, X } from 'lucide-react';
 
@@ -10,6 +10,9 @@ import logo from '../../assets/Backgrounds/logo.svg';
 const Navbar = ({ showLogo }: { showLogo: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const menuData = [
     {
@@ -49,16 +52,27 @@ const Navbar = ({ showLogo }: { showLogo: boolean }) => {
     { name: "CONNECT", hasDropdown: false, path: "/connect" },
   ];
 
-  const closeMenu = () => { setIsOpen(false); setExpandedItem(null); }
-  const handleLogoClick = (e: React.MouseEvent) => {
-    const isAtHome = window.location.hash === '#/' || window.location.hash === '#' || window.location.hash === '';
+  const closeMenu = () => {
+    setIsOpen(false);
+    setExpandedItem(null);
+  };
 
-    if (isAtHome) {
-      e.preventDefault();
+  const handleLogoClick = () => {
+    // Detects home across Localhost (:8080), GitHub Pages (#/), and standard hosting (/)
+    const isHome =
+      location.pathname === "/" &&
+      (location.hash === "" || location.hash === "#/" || location.hash === "#");
+
+    if (isHome) {
+      // Force a hard refresh to reset MusicPlayer, SkipButton, and all states
       window.scrollTo(0, 0);
+    } else {
+      // Navigate to home from any other page (like /ai-assistant)
+      navigate('/');
     }
     closeMenu();
   };
+
   return (
     <div className="font-['Oxanium']">
       <nav className="fixed top-0 left-0 right-0 z-[100] flex justify-between items-center p-4 md:p-6 pointer-events-none">
@@ -70,10 +84,10 @@ const Navbar = ({ showLogo }: { showLogo: boolean }) => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
+                onClick={handleLogoClick}
+                className="cursor-pointer"
               >
-                <Link to="/" onClick={handleLogoClick}>
-                  <img src={logo} alt="Logo" className="w-10 h-10" />
-                </Link>
+                <img src={logo} alt="Logo" className="w-10 h-10" />
               </motion.div>
             )}
           </AnimatePresence>
@@ -107,7 +121,8 @@ const Navbar = ({ showLogo }: { showLogo: boolean }) => {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed top-0 right-0 h-screen w-full sm:w-[450px] bg-black z-[100] flex flex-col shadow-2xl border-l border-white/5"            >
+              className="fixed top-0 right-0 h-screen w-full sm:w-[450px] bg-black z-[100] flex flex-col shadow-2xl border-l border-white/5"
+            >
               <div className="p-10 flex justify-end">
                 <button onClick={closeMenu} className="text-white hover:text-blue-400 transition-colors">
                   <X size={32} strokeWidth={1.5} />
@@ -120,22 +135,19 @@ const Navbar = ({ showLogo }: { showLogo: boolean }) => {
                     <div key={item.name} className="flex flex-col">
                       <div
                         className="flex items-center justify-between cursor-pointer group py-1"
-                        onClick={() => item.hasDropdown ? setExpandedItem(expandedItem === item.name ? null : item.name) : null}
+                        onClick={() => {
+                          if (item.hasDropdown) {
+                            setExpandedItem(expandedItem === item.name ? null : item.name);
+                          } else {
+                            navigate(item.path || "/");
+                            closeMenu();
+                          }
+                        }}
                       >
-                        {item.hasDropdown ? (
-                          <span className={`text-[22px] font-mid tracking-[0.1em] transition-colors uppercase 
-                            ${expandedItem === item.name ? 'text-blue-400' : 'text-white/90 group-hover:text-blue-400'}`}>
-                            {item.name}
-                          </span>
-                        ) : (
-                          <Link
-                            to={item.path || "#"}
-                            onClick={closeMenu}
-                            className="text-[24px] font-mid tracking-[0.1em] text-white/90 hover:text-blue-400 transition-colors uppercase"
-                          >
-                            {item.name}
-                          </Link>
-                        )}
+                        <span className={`text-[22px] font-mid tracking-[0.1em] transition-colors uppercase 
+                          ${expandedItem === item.name ? 'text-blue-400' : 'text-white/90 group-hover:text-blue-400'}`}>
+                          {item.name}
+                        </span>
 
                         {item.hasDropdown && (
                           <ChevronDown
@@ -154,14 +166,16 @@ const Navbar = ({ showLogo }: { showLogo: boolean }) => {
                         >
                           <div className="flex flex-col gap-3 pt-4 pl-1">
                             {item.subItems?.map((sub) => (
-                              <Link
+                              <button
                                 key={sub.label}
-                                to={sub.path}
-                                onClick={closeMenu}
-                                className="text-[18px] text-gray-400 hover:text-blue-400 hover:underline transition-all w-fit decoration-1 underline-offset-[8px]"
+                                onClick={() => {
+                                  navigate(sub.path);
+                                  closeMenu();
+                                }}
+                                className="text-[18px] text-left text-gray-400 hover:text-blue-400 hover:underline transition-all w-fit decoration-1 underline-offset-[8px]"
                               >
                                 {sub.label}
-                              </Link>
+                              </button>
                             ))}
                           </div>
                         </motion.div>
