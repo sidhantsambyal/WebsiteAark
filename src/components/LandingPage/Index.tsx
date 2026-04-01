@@ -21,7 +21,7 @@ import platform from '../../assets/Runic-PNGs/Platform.png';
 import product from '../../assets/Runic-PNGs/Product.png';
 import semiconductor from '../../assets/Runic-PNGs/semiconductor.png';
 import software from '../../assets/Runic-PNGs/Software.png';
-import backgroundVideo from '../../assets/Backgrounds/Section4and5.mp4';
+import backgroundVideo from '../../assets/Backgrounds/background2mb.mp4';
 import homePageBg from '../../assets/Backgrounds/HomepageBG.jpg';
 import blacktransparent from "../../assets/Runic-PNGs/blank-transparent.png"
 import ScrollDown from './scrolldown';

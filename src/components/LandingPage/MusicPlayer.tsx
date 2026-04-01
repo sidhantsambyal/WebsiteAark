@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import backgroundMusic from '../../assets/Music/Startrek201.mp3';
 
 // Added interface for the prop
 interface MusicPlayerProps {
@@ -9,7 +10,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ shift }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const audioSrc = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+  const audioSrc = backgroundMusic;
 
   const flatPath = "M 0 14 L 50 14 L 100 14 L 150 14 L 200 14 L 250 14 L 300 14";
   const wavePath = "M 0 14 C 12.5 0, 37.5 28, 50 14 C 62.5 0, 87.5 28, 100 14 C 112.5 0, 137.5 28, 150 14 C 162.5 0, 187.5 28, 200 14 C 212.5 0, 237.5 28, 250 14 C 262.5 0, 287.5 28, 300 14";
