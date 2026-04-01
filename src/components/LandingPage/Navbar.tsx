@@ -50,7 +50,15 @@ const Navbar = ({ showLogo }: { showLogo: boolean }) => {
   ];
 
   const closeMenu = () => { setIsOpen(false); setExpandedItem(null); }
+  const handleLogoClick = (e: React.MouseEvent) => {
+    const isAtHome = window.location.hash === '#/' || window.location.hash === '#' || window.location.hash === '';
 
+    if (isAtHome) {
+      e.preventDefault();
+      window.scrollTo(0, 0);
+    }
+    closeMenu();
+  };
   return (
     <div className="font-['Oxanium']">
       <nav className="fixed top-0 left-0 right-0 z-[100] flex justify-between items-center p-4 md:p-6 pointer-events-none">
@@ -63,7 +71,7 @@ const Navbar = ({ showLogo }: { showLogo: boolean }) => {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
-                <Link to="/" onClick={closeMenu}>
+                <Link to="/" onClick={handleLogoClick}>
                   <img src={logo} alt="Logo" className="w-10 h-10" />
                 </Link>
               </motion.div>

@@ -1,14 +1,17 @@
 import React, { useState, useRef } from 'react';
 
-const MusicPlayer = () => {
+// Added interface for the prop
+interface MusicPlayerProps {
+  shift?: boolean;
+}
+
+const MusicPlayer: React.FC<MusicPlayerProps> = ({ shift }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const audioSrc = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
 
-  // Coordinates for the "Dead" flat line (remains for the transition morph)
   const flatPath = "M 0 14 L 50 14 L 100 14 L 150 14 L 200 14 L 250 14 L 300 14";
-  // Coordinates for the "Live" sine wave
   const wavePath = "M 0 14 C 12.5 0, 37.5 28, 50 14 C 62.5 0, 87.5 28, 100 14 C 112.5 0, 137.5 28, 150 14 C 162.5 0, 187.5 28, 200 14 C 212.5 0, 237.5 28, 250 14 C 262.5 0, 287.5 28, 300 14";
 
   const togglePlay = () => {
@@ -23,7 +26,8 @@ const MusicPlayer = () => {
   };
 
   return (
-    <div className="music-container">
+    // Dynamic right position based on the shift prop
+    <div className="music-container" style={{ right: shift ? '20px' : '105px' }}>
       <audio ref={audioRef} src={audioSrc} loop />
 
       <button className="MusicBtn" onClick={togglePlay}>
@@ -39,7 +43,6 @@ const MusicPlayer = () => {
             />
           </svg>
         </div>
-
         <span className="text">{isPlaying ? 'Pause' : 'Play'}</span>
       </button>
 
@@ -47,8 +50,9 @@ const MusicPlayer = () => {
         .music-container {
           position: fixed;
           bottom: 20px;
-          right: 105px; 
           z-index: 99;
+          /* Smooth transition for moving between positions */
+          transition: right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .MusicBtn {
@@ -78,12 +82,10 @@ const MusicPlayer = () => {
         }
 
         .line-path {
-          /* Added opacity: 0 to hide the flat line */
           opacity: 0;
           transition: d 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
         }
 
-        /* Show the line and start animation when playing */
         .line-path.animating {
           opacity: 1;
           animation: wave-slide 3s linear infinite;

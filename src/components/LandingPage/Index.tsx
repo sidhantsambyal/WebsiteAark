@@ -43,6 +43,7 @@ const LandingPage = () => {
   const [transformationProgress, setTransformationProgress] = useState(0);
   const [carouselProgress, setCarouselProgress] = useState(0);
   const [isRunicReady, setIsRunicReady] = useState(false);
+  const [isSkipVisible, setIsSkipVisible] = useState(true);
 
   const handleSkip = () => {
     gsap.to(window, {
@@ -112,6 +113,7 @@ const LandingPage = () => {
         }
       });
 
+
       if (isRunicReady && runicApiRef.current) {
         const api = runicApiRef.current;
         const maxProgress = api.getCarouselMaxProgress?.() || 1;
@@ -140,8 +142,10 @@ const LandingPage = () => {
       ScrollTrigger.create({
         trigger: "#challenge-section",
         start: "top 80%",
-        onEnter: () => setIsScrollDownVisible(false),
-        onLeaveBack: () => setIsScrollDownVisible(true),
+        onEnter: () => { setIsScrollDownVisible(false); setIsSkipVisible(false); }, // Hide skip button
+        onLeaveBack: () => {
+          setIsScrollDownVisible(true); setIsSkipVisible(true);
+        },// Show skip button
       });
     }, containerRef);
     return () => ctx.revert();
@@ -208,7 +212,7 @@ const LandingPage = () => {
         <ChallengeOutcomeSection />
       </div>
 
-      <MusicPlayer />
+      <MusicPlayer shift={!isSkipVisible} />
       <div style={{
         transition: 'opacity 0.5s ease, visibility 0.5s',
         opacity: isScrollDownVisible ? 1 : 0,
@@ -218,7 +222,14 @@ const LandingPage = () => {
         <ScrollDown />
       </div>
       <Navbar showLogo={showNavLogo} />
-      <SkipButton onSkip={handleSkip} />
+      <div style={{
+        transition: 'opacity 0.5s ease, visibility 0.5s',
+        opacity: isSkipVisible ? 1 : 0,
+        visibility: isSkipVisible ? 'visible' : 'hidden',
+        pointerEvents: isSkipVisible ? 'auto' : 'none'
+      }}>
+        <SkipButton onSkip={handleSkip} />
+      </div>
     </main>
   );
 };
