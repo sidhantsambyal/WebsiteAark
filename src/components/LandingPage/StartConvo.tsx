@@ -52,18 +52,18 @@ const ChallengeOutcomeSection: React.FC<ChallengeOutcomeSectionProps> = () => {
 
       {/* ─── 2. CONTENT LAYER ─── */}
       {/* CHANGE: Unified font-family and narrowed max-width for better readability */}
-      <div className="relative z-10 w-full max-w-5xl px-6 flex flex-col items-center text-center font-['Oxanium']">
+      <div className="relative z-10 w-full max-w-5xl px-6 flex flex-col items-center text-center font-['Raleway']">
 
         <motion.h2
           initial={{ opacity: 0, y: 30, filter: "blur(12px)" }}
           whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           viewport={{ once: true }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="text-2xl sm:text-4xl md:text-4xl font-light tracking-widest uppercase leading-tight"
+          className="text-2xl sm:text-4xl md:text-4xl font-light tracking-widest leading-tight"
         >
-          Whatever The Challenge,
+          Whatever the challenge,
           <span className="block mt-2 opacity-90">
-            We Deliver Outcomes – Not Just Effort
+            We deliver outcomes – not just effort
           </span>
         </motion.h2>
 
@@ -76,8 +76,8 @@ const ChallengeOutcomeSection: React.FC<ChallengeOutcomeSectionProps> = () => {
           transition={{ delay: 0.4, duration: 1 }}
           className="mt-10 mb-14"
         >
-          <span className="text-[10px] sm:text-xs tracking-[0.4em] uppercase font-mono px-6 py-3 bg-black/50 backdrop-blur-sm border-x border-white/10">
-            [ YOUR GOALS BECOME OUR RESPONSIBILITY ]
+          <span className="text-[10px] sm:text-xs tracking-[0.4em] font-[Raleway] px-6 py-3 bg-black/50 backdrop-blur-sm border-x border-white/10">
+            [ Your goals become our responsibility]
           </span>
         </motion.div>
 
@@ -90,7 +90,7 @@ const ChallengeOutcomeSection: React.FC<ChallengeOutcomeSectionProps> = () => {
           transition={{ delay: 0.6, duration: 0.8 }}
           whileHover={{ backgroundColor: "#073766", scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="mb-[0] pl-6 pr-5 pt-4 pb-3 border border-white/20 rounded-full bg-[#0d345a] text-white text-xs sm:text-sm tracking-[0.2em] uppercase font-medium pointer-events-auto transition-all duration-300 flex items-center justify-center"        >
+          className="mb-[0] pl-6 pr-5 pt-4 pb-3 border border-white/20 rounded-full bg-[#0d345a] text-white text-xs sm:text-sm tracking-[0.2em]  font-medium pointer-events-auto transition-all duration-300 flex items-center justify-center"        >
           Start Conversation
         </motion.button>
       </div>

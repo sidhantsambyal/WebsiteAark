@@ -9,7 +9,7 @@ interface LogoSectionProps {
 
 const LogoSection: React.FC<LogoSectionProps> = ({ scatter, progress }) => {
   const line1 = "Endless Possibilities Begin";
-  const line2 = "With The Right Engineering Partner";
+  const line2 = "with The Right Engineering Partner";
   const fullText = line1 + " " + line2;
 
   const uiOpacity = Math.max(0, (scatter - 0.2) * 2);
@@ -56,10 +56,10 @@ const LogoSection: React.FC<LogoSectionProps> = ({ scatter, progress }) => {
 
       {/* Removed 'mb-10' to bring it closer to the logo */}
       <div className="text-center px-4">
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-oxanium font-light tracking-widest text-white uppercase leading-tight select-none">
+        <h1 className="text-xl sm:text-2xl md:text-[32px] font-[Raleway] font-light tracking-widest text-white  leading-tight select-none">
           <div className="block">{renderLine(line1, 0)}</div>
           <div className="h-2" />
-          <span className="font-normal">{renderLine(line2, line1.length + 1)}</span>
+          <span className="font-[Raleway]">{renderLine(line2, line1.length + 1)}</span>
         </h1>
       </div>
     </div>

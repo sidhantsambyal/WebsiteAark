@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import backgroundMusic from '../../assets/Music/Startrek201.mp3';
-
 // Added interface for the prop
 interface MusicPlayerProps {
   shift?: boolean;
@@ -99,7 +98,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ shift }) => {
 
         .text {
           position: relative;
-          font-family: 'Oxanium', sans-serif;
+          font-family: 'Raleway', sans-serif;
           font-size: 11px;
           font-weight: 500;
           color: #ffffff;

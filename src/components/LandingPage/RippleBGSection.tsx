@@ -9,8 +9,9 @@ const RippleBGSection = ({ progress }: { progress: number }) => {
   const line2 = "Taking full responsibility from concept to market";
 
   // Common Typography Classes
-  // Ensure "font-oxanium" is defined in your tailwind.config.js 
-  const textStyles = "text-2xl md:text-3xl font-oxanium font-light tracking-[0.15em] text-white uppercase leading-tight text-center";
+  // Ensure "font-raleway" is defined in your tailwind.config.js 
+  // e.g. theme: { extend: { fontFamily: { raleway: ["Raleway", "sans-serif"] } } }
+  const textStyles = "text-2xl md:text-[32px] font-[Raleway] font-light tracking-[0.15em] text-white leading-tight text-center";
 
   // LINE 1 LOGIC: In: 0.45 -> 0.55 | Out: 0.70 -> 0.80
   const opacity1 = useMemo(() => {

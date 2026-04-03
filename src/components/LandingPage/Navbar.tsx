@@ -74,7 +74,7 @@ const Navbar = ({ showLogo }: { showLogo: boolean }) => {
   };
 
   return (
-    <div className="font-['Oxanium']">
+    <div>
       <nav className="fixed top-0 left-0 right-0 z-[100] flex justify-between items-center p-4 md:p-6 pointer-events-none">
         <div className="pointer-events-auto">
           <AnimatePresence>

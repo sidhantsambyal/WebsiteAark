@@ -36,7 +36,7 @@ const SkipButton: React.FC<SkipButtonProps> = ({ onSkip }) => {
                 }
 
                 .text {
-                  font-family: 'Oxanium', sans-serif;
+                  font-family: 'Raleway', sans-serif;
                   font-size: 12px;
                   font-weight: 500;
                   transition: all 0.3s ease;

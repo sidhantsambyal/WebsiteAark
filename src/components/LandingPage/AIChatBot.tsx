@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import backgroundVideo from '../../assets/Backgrounds/Section4and5.mp4'; 
+import backgroundVideo from '../../assets/Backgrounds/Section4and5.mp4';
 
 const quickActions = [
   "Explore AAR-X Products", "Understand Our Services", "Semiconductor FA & SEMI Standards", "Request A Live Demo", "Discuss A Project"
@@ -26,9 +26,9 @@ const AIChatBot = () => {
   };
 
   return (
-    <section 
-      id="AIContact" 
-      style={{ fontFamily: '"Oxanium", sans-serif' }} 
+    <section
+      id="AIContact"
+      style={{ fontFamily: '"Raleway", sans-serif' }}
       className="relative w-full h-screen overflow-hidden bg-[#050508] text-white flex flex-col items-center justify-center px-4"
     >
       {/* ─── FIXED BACKGROUND LAYER ─── */}
@@ -48,12 +48,12 @@ const AIChatBot = () => {
           whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           viewport={{ once: true }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          className="text-2xl md:text-3xl font-light tracking-[0.2em] uppercase leading-tight mb-16"
+          className="text-2xl md:text-3xl font-light tracking-[0.2em] uppercase leading-tight mb-16 font-[Raleway]"
         >
           Hi there - How may I assist you today?
         </motion.h2>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
@@ -62,31 +62,31 @@ const AIChatBot = () => {
         >
           <div className="absolute inset-0 bg-[#60a5fa]/10 blur-3xl rounded-full" />
           <div className="relative z-10 w-full border border-white/10 rounded-full bg-black/40 backdrop-blur-xl flex items-center hover:border-white/20 transition-colors px-8 py-5">
-            <input 
-              type="text" 
-              value={query} 
-              onChange={(e) => setQuery(e.target.value)} 
-              onKeyDown={handleKeyDown} 
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder="Type Your Question Here..."
-              className="w-full bg-transparent outline-none text-white placeholder-white/40 tracking-wide text-sm md:text-base"
+              className="w-full bg-transparent outline-none text-white placeholder-white/40 tracking-wide text-sm md:text-base font-[Raleway]"
             />
-            <span className="font-mono text-sm tracking-widest text-[#60a5fa]/60 ml-2 animate-pulse">_</span>
+            <span className="font-Raleway text-sm tracking-widest text-[#60a5fa]/60 ml-2 animate-pulse">_</span>
           </div>
         </motion.div>
 
-        <motion.div 
-          variants={containerVariants} 
-          initial="hidden" 
-          whileInView="visible" 
-          viewport={{ once: true }} 
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
           className="flex flex-wrap justify-center gap-4 max-w-4xl"
         >
           {quickActions.map((action, index) => (
-            <motion.button 
-              key={index} 
-              variants={buttonVariants} 
-              whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.05)", borderColor: "rgba(255, 255, 255, 0.3)" }} 
-              onClick={() => setQuery(action)} 
+            <motion.button
+              key={index}
+              variants={buttonVariants}
+              whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.05)", borderColor: "rgba(255, 255, 255, 0.3)" }}
+              onClick={() => setQuery(action)}
               className="px-6 py-3 border border-white/10 rounded-full text-xs md:text-sm tracking-widest text-white/70 bg-black/20 hover:text-white transition-all duration-300"
             >
               {action}

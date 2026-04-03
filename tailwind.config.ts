@@ -19,7 +19,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        oxanium: ["Oxanium", "sans-serif"],
+        raleway: ["Raleway", "sans-serif"],
         outfit: ["Outfit", "sans-serif"],
       },
       colors: {
