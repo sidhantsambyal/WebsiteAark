@@ -65,7 +65,7 @@ const Navbar = ({ showLogo }: { showLogo: boolean }) => {
 
     if (isHome) {
       // Force a hard refresh to reset MusicPlayer, SkipButton, and all states
-      window.scrollTo(0, 0);
+      window.location.reload();
     } else {
       // Navigate to home from any other page (like /ai-assistant)
       navigate('/');

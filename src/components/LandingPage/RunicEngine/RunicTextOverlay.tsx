@@ -169,7 +169,7 @@ export function RunicTextOverlay({
             style={{ opacity: p2Opacity, filter: `blur(${6 * (1 - p2Opacity)}px)` }}
           >
             {p2Text}
-            <span className="inline-block w-[0.6ch] align-baseline" style={{ opacity: localT < 0.78 ? 1 : 0 }}>
+            <span className="inline-block w-[0.6ch] align-baseline" style={{ opacity: localT < 0.4 ? 1 : 0 }}>
               _
             </span>
           </div>
