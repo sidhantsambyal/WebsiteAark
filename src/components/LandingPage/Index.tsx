@@ -68,7 +68,11 @@ const LandingPage = () => {
     if (!runicInitializedRef.current) {
       runicInitializedRef.current = true;
       runicApiRef.current = api;
-      setTimeout(() => setIsRunicReady(true), 200);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsRunicReady(true);
+        });
+      });
     }
   }, []);
 
@@ -87,7 +91,15 @@ const LandingPage = () => {
 
   const { scrollYProgress: globalScroll } = useScroll();
   const videoOpacity = useTransform(globalScroll, [0, 0.15, 1], [0, 1, 1]);
-  const runicOpacity = useTransform(runicFadeProgress, [0.5, 0.95], [0, 1]);
+  const runicOpacity = useTransform(runicFadeProgress, [0.9, 1], [0, 1]);
+  const runicReveal = useTransform(runicFadeProgress, [0.6, 0.9], [0, 1]);
+  const smoothRunicReveal = useSpring(runicReveal, {
+    stiffness: 60,
+    damping: 20,
+  });
+  const runicScale = useTransform(smoothRunicReveal, [0, 1], [0.85, 1]);
+  const runicBlur = useTransform(smoothRunicReveal, [0, 1], [10, 0]);
+  const runicBlurFilter = useTransform(runicBlur, (b) => `blur(${b}px)`);
   const [runicExitOpacity, setRunicExitOpacity] = useState(1);
 
   useMotionValueEvent(smoothScatter, "change", setS2Value);
@@ -193,7 +205,15 @@ const LandingPage = () => {
         </section>
 
         <section id="RunicSection" ref={runicSectionRef} className="w-full h-screen overflow-hidden bg-transparent">
-          <motion.div className="w-full h-[200vh] relative z-10" style={{ opacity: useTransform(runicOpacity, (v) => v * runicExitOpacity) }}>
+          <motion.div
+            className="w-full h-[200vh] relative z-10"
+            style={{
+              opacity: useTransform(smoothRunicReveal, (v) => v * runicExitOpacity),
+              scale: runicScale,
+              filter: runicBlurFilter,
+              transformOrigin: "center center",
+            }}
+          >
             <div className="sticky top-0 w-full h-screen">
               <RunicRenderer
                 assetPaths={runicAssets}

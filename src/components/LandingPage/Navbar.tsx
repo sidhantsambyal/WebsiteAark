@@ -64,7 +64,7 @@ const Navbar = ({ showLogo }: { showLogo: boolean }) => {
       (location.hash === "" || location.hash === "#/" || location.hash === "#");
 
     if (isHome) {
-      // Force a hard refresh to reset MusicPlayer, SkipButton, and all states
+      // This reloads the current URL, resetting all components and states
       window.location.reload();
     } else {
       // Navigate to home from any other page (like /ai-assistant)
@@ -74,7 +74,7 @@ const Navbar = ({ showLogo }: { showLogo: boolean }) => {
   };
 
   return (
-    <div>
+    <div className="font-['raleway']">
       <nav className="fixed top-0 left-0 right-0 z-[100] flex justify-between items-center p-4 md:p-6 pointer-events-none">
         <div className="pointer-events-auto">
           <AnimatePresence>

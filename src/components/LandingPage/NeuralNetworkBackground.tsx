@@ -198,7 +198,7 @@ const NeuralNetworkBackground: React.FC<NeuralNetworkProps> = ({
           <h1
             className="text-center flex flex-wrap justify-center pointer-events-none
                      font-medium text-white tracking-tighter leading-none
-                     text-[clamp(3rem,6vw,8rem)] font-['raleway']"
+                     text-[clamp(3rem,6vw,8rem)] font-[Raleway]"
           >
             {phrases[index].split("").map((char, i) => (
               <span

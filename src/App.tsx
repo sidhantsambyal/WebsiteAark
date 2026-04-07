@@ -3,15 +3,15 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, HashRouter } from "react-router-dom";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 // Components
 import Index from "./components/LandingPage/Index";
 import AIChatBot from "./components/LandingPage/AIChatBot";
-import Navbar from "./components/LandingPage/Navbar";
-
+import AboutUs from "./components/LandingPage/aboutUs"; // Added AboutUs
+import Navbar from "./components/LandingPage/Navbar";   // Added Navbar for consistent sub-page UI
 import NotFound from "./pages/NotFound";
 
 // 1. Initialize QueryClient outside the component to prevent re-creations on render
@@ -34,7 +34,10 @@ const ScrollToTop = () => {
     // Refresh GSAP to prevent "ghost" scroll heights from previous routes
     if (typeof window !== "undefined") {
       gsap.registerPlugin(ScrollTrigger);
-      ScrollTrigger.refresh();
+      // Small delay ensures DOM has updated before GSAP recalculates
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
     }
   }, [pathname]);
 
@@ -51,6 +54,14 @@ const App = () => {
 
           <Routes>
             <Route path="/" element={<Index />} />
+
+            {/* About Us Route: Includes Navbar with showLogo=true */}
+            <Route path="/about" element={
+              <>
+                <Navbar showLogo={true} />
+                <AboutUs />
+              </>
+            } />
             {/* AI Assistant gets a static Navbar that is always visible */}
             <Route path="/ai-assistant" element={
               <>
