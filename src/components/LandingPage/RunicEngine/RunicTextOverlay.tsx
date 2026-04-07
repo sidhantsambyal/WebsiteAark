@@ -25,7 +25,7 @@ const SUBSETS: RunicSubsetConfig[] = [
     endIndex: 2,
     paragraph1: { intro: 'Whether it’s', impact: 'Hardware or\nSoftware', position: 'top-left' },
     paragraph2: {
-      text: '[ We engineer products across mechanics, electronics, and software ]',
+      text: '[ We engineer products across mechanics, electronics and software]',
       position: 'bottom-right',
     },
   },
@@ -165,7 +165,7 @@ export function RunicTextOverlay({
         {/* Paragraph 2 */}
         <div className={`absolute ${quadrantClass(subset.paragraph2.position)} max-w-[min(26rem,34vw)]`}>
           <div
-            className="font-[Raleway] text-[clamp(0.72rem,0.9vw,0.9rem)] tracking-[0.28em] leading-relaxed text-white/80 whitespace-normal break-words "
+            className="font-[Raleway] text-[clamp(0.9rem,1.35vw,1.25rem)] tracking-[0.1em] leading-relaxed text-white/80 whitespace-normal break-words "
             style={{ opacity: p2Opacity, filter: `blur(${6 * (1 - p2Opacity)}px)` }}
           >
             {p2Text}
