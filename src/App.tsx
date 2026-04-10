@@ -29,8 +29,13 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-
+    // Wait slightly to ensure DOM has updated and previous styles (like overflow) have cleared
+    requestAnimationFrame(() => {
+      // Force scroll reset
+      window.scrollTo({ top: 0, behavior: "instant" });
+      document.body.scrollTop = 0; // Safari
+      document.documentElement.scrollTop = 0; // Chrome, Firefox, IE and Opera
+    });
     // Refresh GSAP to prevent "ghost" scroll heights from previous routes
     if (typeof window !== "undefined") {
       gsap.registerPlugin(ScrollTrigger);

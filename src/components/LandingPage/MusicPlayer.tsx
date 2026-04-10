@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import backgroundMusic from '../../assets/Music/Startrek201.mp3';
-// Added interface for the prop
+
 interface MusicPlayerProps {
   shift?: boolean;
 }
@@ -26,7 +26,6 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ shift }) => {
   };
 
   return (
-    // Dynamic right position based on the shift prop
     <div className="music-container" style={{ right: shift ? '20px' : '105px' }}>
       <audio ref={audioRef} src={audioSrc} loop />
 
@@ -51,7 +50,6 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ shift }) => {
           position: fixed;
           bottom: 20px;
           z-index: 99;
-          /* Smooth transition for moving between positions */
           transition: right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -63,11 +61,27 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ shift }) => {
           width: 75px;
           height: 28px;
           background: transparent;
-          border: 1px solid #9db1cc;
+          border: none; /* Removed standard border */
           border-radius: 20px;
           cursor: pointer;
           transition: all 0.3s ease;
           overflow: hidden;
+        }
+
+        /* The Gradient Border Effect */
+        .MusicBtn::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: 20px; 
+          padding: 1.5px; /* Border thickness */
+          background: linear-gradient(to right, #8a4fff, #2d82e4); 
+          -webkit-mask: 
+            linear-gradient(#fff 0 0) content-box, 
+            linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          pointer-events: none;
         }
 
         .wave-wrapper {
@@ -104,12 +118,15 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ shift }) => {
           color: #ffffff;
           z-index: 10;
           pointer-events: none;
-          text-shadow: 0 0 3px rgba(0,0,0,0.4);
         }
 
+        /* Removed background change on hover to stay transparent */
         .MusicBtn:hover {
-          border-color: #ffffff;
-          background-color: rgba(255, 255, 255, 0.05);
+          transform: translateY(-1px);
+        }
+
+        .MusicBtn:active {
+          transform: scale(0.95);
         }
       `}</style>
     </div>

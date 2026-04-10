@@ -1,31 +1,31 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import { useNavigate } from 'react-router-dom'; // CHANGE: Added for routing
 import NeuralNetworkBackground from './NeuralNetworkBackground';
 
 interface ChallengeOutcomeSectionProps {
   onStartConversation?: () => void;
+  progress?: number;
 }
 
-const ChallengeOutcomeSection: React.FC<ChallengeOutcomeSectionProps> = () => {
+const ChallengeOutcomeSection: React.FC<ChallengeOutcomeSectionProps> = ({ progress = 1 }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const navigate = useNavigate(); // CHANGE: Hook to handle programmatic navigation
 
   // ─── SCROLL ANIMATION LOGIC ──────────────────────────────────────
-  // CHANGE: Added scroll tracking to drive the "Scatter" effect
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "center center"]
-  });
-
-  // Map scroll progress (0 to 1) to scatter values (0.3 down to 0)
-  const rawScatter = useTransform(scrollYProgress, [0, 1], [0.3, 0]);
+  // Driven externally by the parent's scroll trigger logic via the `progress` prop
+  const progressMv = useMotionValue(0);
+  const rawScatter = useTransform(progressMv, [0, 1], [0.4, 0]);
   const smoothScatter = useSpring(rawScatter, { stiffness: 50, damping: 20 });
 
   // State bridge to pass MotionValue to the non-motion Three.js component
-  const [scatterVal, setScatterVal] = useState(0.3);
+  const [scatterVal, setScatterVal] = useState(0.4);
+
+  useEffect(() => {
+    progressMv.set(progress);
+  }, [progress, progressMv]);
 
   useEffect(() => {
     return smoothScatter.on("change", (v) => setScatterVal(v));

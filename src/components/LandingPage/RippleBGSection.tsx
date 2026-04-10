@@ -13,23 +13,23 @@ const RippleBGSection = ({ progress }: { progress: number }) => {
   // e.g. theme: { extend: { fontFamily: { raleway: ["Raleway", "sans-serif"] } } }
   const textStyles = "text-2xl md:text-[32px] font-[Raleway] font-light tracking-[0.15em] text-white leading-tight text-center";
 
-  // LINE 1 LOGIC: In: 0.45 -> 0.55 | Out: 0.70 -> 0.80
+  // LINE 1 LOGIC: In: 0.50 -> 0.60 | Out: 0.70 -> 0.80
   const opacity1 = useMemo(() => {
-    if (progress < 0.40 || progress > 0.80) return 0;
-    const fadeIn = gsap.utils.mapRange(0.45, 0.55, 0, 1, progress);
+    if (progress < 0.45 || progress > 0.85) return 0;
+    const fadeIn = gsap.utils.mapRange(0.50, 0.60, 0, 1, progress);
     const fadeOut = gsap.utils.mapRange(0.70, 0.80, 1, 0, progress);
     return Math.min(fadeIn, fadeOut);
   }, [progress]);
 
-  // LINE 2 LOGIC: In: 0.75 -> 0.85 | Out: 0.95 -> 1.0
+  // LINE 2 LOGIC: In: 0.75 -> 0.85 | Out: 0.90 -> 1.0
   const opacity2 = useMemo(() => {
-    if (progress < 0.75 || progress > 1.0) return 0;
+    if (progress < 0.70 || progress > 1.0) return 0;
     const fadeIn = gsap.utils.mapRange(0.75, 0.85, 0, 1, progress);
-    const fadeOut = gsap.utils.mapRange(0.95, 1.0, 1, 0, progress);
+    const fadeOut = gsap.utils.mapRange(0.90, 1.0, 1, 0, progress);
     return Math.min(fadeIn, fadeOut);
   }, [progress]);
 
-  const scale1 = useMemo(() => 1 + (progress - 0.45) * 0.05, [progress]);
+  const scale1 = useMemo(() => 1 + (progress - 0.50) * 0.05, [progress]);
   const scale2 = useMemo(() => 1 + (progress - 0.75) * 0.05, [progress]);
 
   const renderText = (text: string, isActive: boolean) => (

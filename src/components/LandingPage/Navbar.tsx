@@ -7,7 +7,7 @@ import { ChevronDown, X } from 'lucide-react';
 
 import logo from '../../assets/Backgrounds/logo.svg';
 
-const Navbar = ({ showLogo }: { showLogo: boolean }) => {
+const Navbar = ({ showLogo, customLogo, logoClassName }: { showLogo: boolean, customLogo?: string, logoClassName?: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
@@ -66,6 +66,8 @@ const Navbar = ({ showLogo }: { showLogo: boolean }) => {
     if (isHome) {
       // This reloads the current URL, resetting all components and states
       window.location.reload();
+      ScrollTrigger.refresh();
+
     } else {
       // Navigate to home from any other page (like /ai-assistant)
       navigate('/');
@@ -87,7 +89,7 @@ const Navbar = ({ showLogo }: { showLogo: boolean }) => {
                 onClick={handleLogoClick}
                 className="cursor-pointer"
               >
-                <img src={logo} alt="Logo" className="w-10 h-10" />
+                <img src={customLogo || logo} alt="Logo" className={logoClassName || "w-10 h-10"} />
               </motion.div>
             )}
           </AnimatePresence>

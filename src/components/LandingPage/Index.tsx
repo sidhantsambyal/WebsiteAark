@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
-import { useScroll, useMotionValueEvent, useSpring, motion, useTransform } from 'framer-motion';
+import { useScroll, useMotionValueEvent, useSpring, motion, useTransform, useMotionValue } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
@@ -21,7 +21,7 @@ import platform from '../../assets/Runic-PNGs/Platform.png';
 import product from '../../assets/Runic-PNGs/Product.png';
 import semiconductor from '../../assets/Runic-PNGs/semiconductor.png';
 import software from '../../assets/Runic-PNGs/Software.png';
-import backgroundVideo from '../../assets/Backgrounds/background2mb.mp4';
+import backgroundVideo from '../../assets/Backgrounds/background.mp4';
 import homePageBg from '../../assets/Backgrounds/HomepageBG.jpg';
 import blacktransparent from "../../assets/Runic-PNGs/blank-transparent.png"
 import ScrollDown from './scrolldown';
@@ -49,12 +49,28 @@ const LandingPage = () => {
   const [challengeOpacity, setChallengeOpacity] = useState(0);
   const [isLocked, setIsLocked] = useState(false);
 
+  useEffect(() => {
+    if (isLocked) {
+      document.body.style.overflow = "hidden";
+      // Ensure we remain precisely locked at the full bottom frame
+      window.scrollTo(0, document.body.scrollHeight);
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isLocked]);
+
   const handleSkip = () => {
     gsap.to(window, {
       duration: 0,
-      scrollTo: "#challenge-trigger",
-      ease: "power4.inOut"
+      // scrollTo: "#challenge-trigger",
+      // ease: "power4.inOut"
+      scrollTo: document.body.scrollHeight,
     });
+
   };
 
   const runicAssets = useMemo(() => [
@@ -84,23 +100,12 @@ const LandingPage = () => {
   const smoothScatter = useSpring(scatterScroll, { stiffness: 45, damping: 25 });
   const bg1Opacity = useTransform(smoothScatter, [0.4, 0.85], [1, 0]);
 
-  const { scrollYProgress: runicFadeProgress } = useScroll({
-    target: runicSectionRef,
-    offset: ["start end", "start start"]
-  });
-
   const { scrollYProgress: globalScroll } = useScroll();
   const videoOpacity = useTransform(globalScroll, [0, 0.15, 1], [0, 1, 1]);
-  const runicOpacity = useTransform(runicFadeProgress, [0.9, 1], [0, 1]);
-  const runicReveal = useTransform(runicFadeProgress, [0.6, 0.9], [0, 1]);
-  const smoothRunicReveal = useSpring(runicReveal, {
-    stiffness: 60,
-    damping: 20,
-  });
-  const runicScale = useTransform(smoothRunicReveal, [0, 1], [0.85, 1]);
-  const runicBlur = useTransform(smoothRunicReveal, [0, 1], [10, 0]);
-  const runicBlurFilter = useTransform(runicBlur, (b) => `blur(${b}px)`);
-  const [runicExitOpacity, setRunicExitOpacity] = useState(1);
+
+  const runicCombinedOpacity = useMotionValue(0);
+  const runicScaleValue = useMotionValue(0.85);
+  const runicBlurValue = useMotionValue(10);
 
   useMotionValueEvent(smoothScatter, "change", setS2Value);
 
@@ -109,36 +114,59 @@ const LandingPage = () => {
       ScrollTrigger.create({
         trigger: section2Ref.current,
         start: "top top",
-        end: "+=300%",
+        end: "+=260%",
         pin: true,
         scrub: 0.5,
         onUpdate: (self) => {
           const p = self.progress;
           setTransformationProgress(p);
-          setShowNavLogo(p > 0.4 || isLocked);
+          setShowNavLogo(p > 0.4 || challengeOpacity > 0.5);
         }
       });
 
       if (isRunicReady && runicApiRef.current) {
         const api = runicApiRef.current;
         const maxProgress = api.getCarouselMaxProgress?.() || 1;
+
         ScrollTrigger.create({
-          trigger: runicSectionRef.current,
+          trigger: "#RunicTrigger",
           start: "top top",
-          end: () => `+=${maxProgress * 650}`,
-          pin: true,
-          pinSpacing: true,
+          end: "bottom bottom",
           scrub: 0.5,
           onUpdate: (self) => {
             const p = self.progress;
-            const currentP = p * maxProgress;
-            api.updateProgress?.(currentP);
-            setCarouselProgress(currentP);
-            if (p > 0.97) {
-              const fade = gsap.utils.mapRange(0.97, 1.0, 1, 0, p);
-              setRunicExitOpacity(fade);
-            } else {
-              setRunicExitOpacity(1);
+
+            // CAROUSEL MOVEMENT (Starts at 0% and runs until 85%)
+            const carouselP = gsap.utils.mapRange(0, 0.85, 0, maxProgress, p);
+            const clampedCarouselP = Math.max(0, Math.min(maxProgress, carouselP));
+
+            api.updateProgress?.(clampedCarouselP);
+            setCarouselProgress(clampedCarouselP);
+
+            // VISUAL STATES (Opacity, Scale, Blur)
+            // PHASE: Intro (0% to 10%)
+            if (p <= 0.1) {
+              const introP = gsap.utils.mapRange(0, 0.1, 0, 1, p);
+              runicCombinedOpacity.set(introP);
+              runicScaleValue.set(0.85 + (0.15 * introP));
+              runicBlurValue.set((1 - introP) * 10);
+            }
+            // PHASE: Sustain (10% to 85%)
+            else if (p > 0.1 && p <= 0.85) {
+              runicCombinedOpacity.set(1);
+              runicScaleValue.set(1);
+              runicBlurValue.set(0);
+            }
+            // PHASE: Exit (85% to 100%)
+            else {
+              const exitP = gsap.utils.mapRange(0.85, 1.0, 1, 0, p);
+              runicCombinedOpacity.set(exitP);
+              runicScaleValue.set(1);
+              runicBlurValue.set(0);
+            }
+
+            if (runicSectionRef.current) {
+              runicSectionRef.current.style.pointerEvents = (p > 0.05 && p < 0.95) ? "auto" : "none";
             }
           }
         });
@@ -152,7 +180,6 @@ const LandingPage = () => {
         scrub: true,
         onUpdate: (self) => {
           setChallengeOpacity(self.progress);
-          // When progress is 1, the user has scrolled the full height of the trigger
           if (self.progress >= 1 && !isLocked) {
             setIsLocked(true);
           }
@@ -162,33 +189,31 @@ const LandingPage = () => {
           setIsSkipVisible(false);
         },
         onLeaveBack: () => {
-          if (!isLocked) {
-            setIsScrollDownVisible(true);
-            setIsSkipVisible(true);
-          }
+          setIsScrollDownVisible(true);
+          setIsSkipVisible(true);
         },
       });
     }, containerRef);
     return () => ctx.revert();
-  }, [isRunicReady, isLocked]);
+  }, [isRunicReady]);
 
   return (
     <main
       ref={containerRef}
-      className={`relative bg-[#050508] text-white ${isLocked ? 'h-screen overflow-hidden' : 'overflow-x-hidden'}`}
+      className="relative bg-[#050508] text-white overflow-x-hidden"
     >
-      {/* Background and previous content - Hidden when locked for performance and to prevent scroll-back */}
+      {/* Background and previous content */}
 
       <div className="fixed inset-0 z-0 pointer-events-none">
         <motion.div className="absolute inset-0 bg-cover bg-center" style={{ opacity: bg1Opacity, backgroundImage: `url(${homePageBg})` }} />
-        <motion.div className="absolute inset-0" style={{ opacity: isLocked ? 1 : videoOpacity }}>
+        <motion.div className="absolute inset-0" style={{ opacity: videoOpacity }}>
           <video autoPlay loop muted playsInline className="w-full h-full object-cover " style={{ mixBlendMode: 'screen' }}>
             <source src={backgroundVideo} type="video/mp4" />
           </video>
         </motion.div>
       </div>
-      <div className={`${isLocked ? 'hidden' : 'block'}`}>
-        <div className="fixed inset-0 z-30 pointer-events-none">
+      <div className="block">
+        <div className="fixed inset-0 z-30 pointer-events-none" style={{ opacity: 1 - challengeOpacity }}>
           <NeuralNetworkBackground scatter={s2Value} />
         </div>
 
@@ -204,17 +229,19 @@ const LandingPage = () => {
           <RippleBGSection progress={transformationProgress} />
         </section>
 
-        <section id="RunicSection" ref={runicSectionRef} className="w-full h-screen overflow-hidden bg-transparent">
+        <div id="RunicTrigger" className="h-[5353px] w-full bg-transparent" />
+
+        <section id="RunicSection" ref={runicSectionRef} className="fixed inset-0 w-full h-screen overflow-hidden bg-transparent pointer-events-none">
           <motion.div
-            className="w-full h-[200vh] relative z-10"
+            className="w-full h-full relative z-[10]"
             style={{
-              opacity: useTransform(smoothRunicReveal, (v) => v * runicExitOpacity),
-              scale: runicScale,
-              filter: runicBlurFilter,
+              opacity: runicCombinedOpacity,
+              scale: runicScaleValue,
+              filter: useTransform(runicBlurValue, (v) => `blur(${v}px)`),
               transformOrigin: "center center",
             }}
           >
-            <div className="sticky top-0 w-full h-screen">
+            <div className="w-full h-full">
               <RunicRenderer
                 assetPaths={runicAssets}
                 width="100%"
@@ -224,7 +251,7 @@ const LandingPage = () => {
                 showLoadingProgress={false}
                 onInitialized={handleRunicInitialized}
               />
-              <RunicTextOverlay carouselProgress={carouselProgress} overlayOpacity={runicOpacity} />
+              <RunicTextOverlay carouselProgress={carouselProgress} overlayOpacity={runicCombinedOpacity} />
             </div>
           </motion.div>
         </section>
@@ -233,42 +260,40 @@ const LandingPage = () => {
         <div id="challenge-trigger" className="h-screen w-full bg-transparent" />
       </div>
 
-      {/* Challenge Outcome Section - Fades in and locks scroll */}
+      {/* Challenge Outcome Section - Fades in based on scroll */}
       <div
         id="challenge-section"
-        className={`${isLocked ? 'relative' : 'fixed inset-0'} z-[50] bg-transparent`}
+        className="fixed inset-0 z-[20] bg-transparent"
         style={{
-          opacity: isLocked ? 1 : challengeOpacity,
-          pointerEvents: (isLocked || challengeOpacity > 0.8) ? 'auto' : 'none'
+          opacity: challengeOpacity,
+          pointerEvents: challengeOpacity > 0.8 ? 'auto' : 'none'
         }}
       >
-        <ChallengeOutcomeSection />
+        <ChallengeOutcomeSection progress={challengeOpacity} />
       </div>
 
       {/* UI Elements */}
       <MusicPlayer shift={!isSkipVisible} />
       <Navbar showLogo={showNavLogo} />
 
-      {!isLocked && (
-        <>
-          <div style={{
-            transition: 'opacity 0.5s ease, visibility 0.5s',
-            opacity: isScrollDownVisible ? 1 : 0,
-            visibility: isScrollDownVisible ? 'visible' : 'hidden',
-            pointerEvents: isScrollDownVisible ? 'auto' : 'none'
-          }}>
-            <ScrollDown />
-          </div>
-          <div style={{
-            transition: 'opacity 0.5s ease, visibility 0.5s',
-            opacity: isSkipVisible ? 1 : 0,
-            visibility: isSkipVisible ? 'visible' : 'hidden',
-            pointerEvents: isSkipVisible ? 'auto' : 'none'
-          }}>
-            <SkipButton onSkip={handleSkip} />
-          </div>
-        </>
-      )}
+      <>
+        <div style={{
+          transition: 'opacity 0.5s ease, visibility 0.5s',
+          opacity: isScrollDownVisible ? 1 : 0,
+          visibility: isScrollDownVisible ? 'visible' : 'hidden',
+          pointerEvents: isScrollDownVisible ? 'auto' : 'none'
+        }}>
+          <ScrollDown />
+        </div>
+        <div style={{
+          transition: 'opacity 0.5s ease, visibility 0.5s',
+          opacity: isSkipVisible ? 1 : 0,
+          visibility: isSkipVisible ? 'visible' : 'hidden',
+          pointerEvents: isSkipVisible ? 'auto' : 'none'
+        }}>
+          <SkipButton onSkip={handleSkip} />
+        </div>
+      </>
     </main>
   );
 };

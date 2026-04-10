@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import backgroundVideo from '../../assets/Backgrounds/Section4and5.mp4';
+import backgroundVideo from '../../assets/Backgrounds/background.mp4';
 
 const quickActions = [
   "Explore AAR-X Products", "Understand Our Services", "Semiconductor FA & SEMI Standards", "Request A Live Demo", "Discuss A Project"

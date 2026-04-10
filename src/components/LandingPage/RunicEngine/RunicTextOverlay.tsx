@@ -83,11 +83,11 @@ function pickSubset(progress: number) {
   return null;
 }
 
-function typedText(fullText: string, t: number) {
-  const pct = clamp01((t - 0.18) / 0.2);
-  const count = Math.floor(pct * fullText.length);
-  return fullText.slice(0, count);
-}
+// function typedText(fullText: string, t: number) {
+//   const pct = clamp01((t - 0.18) / 0.2);
+//   const count = Math.floor(pct * fullText.length);
+//   return fullText.slice(0, count);
+// }
 
 export function RunicTextOverlay({
   carouselProgress,
@@ -131,7 +131,9 @@ export function RunicTextOverlay({
   };
 
   const p2Opacity = clamp01((localT - 0.16) / 0.15) * (1 - clamp01((localT - 0.9) / 0.08));
-  const p2Text = typedText(subset.paragraph2.text, localT);
+  // const p2Text = typedText(subset.paragraph2.text, localT);
+  const p2Text = subset.paragraph2.text;
+
 
   return (
     <motion.div
@@ -169,9 +171,9 @@ export function RunicTextOverlay({
             style={{ opacity: p2Opacity, filter: `blur(${6 * (1 - p2Opacity)}px)` }}
           >
             {p2Text}
-            <span className="inline-block w-[0.6ch] align-baseline" style={{ opacity: localT < 0.4 ? 1 : 0 }}>
+            {/* <span className="inline-block w-[0.6ch] align-baseline" style={{ opacity: localT < 0.4 ? 1 : 0 }}>
               _
-            </span>
+            </span> */}
           </div>
         </div>
       </motion.div>

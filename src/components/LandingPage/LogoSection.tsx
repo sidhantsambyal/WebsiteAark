@@ -8,36 +8,21 @@ interface LogoSectionProps {
 }
 
 const LogoSection: React.FC<LogoSectionProps> = ({ scatter, progress }) => {
-  const line1 = "Endless Possibilities Begin";
-  const line2 = "with The Right Engineering Partner";
-  const fullText = line1 + " " + line2;
+  const line1 = "Endless possibilities begin";
+  const line2 = "with the right engineering partner";
 
   const uiOpacity = Math.max(0, (scatter - 0.2) * 2);
 
-  const getVisibleStatus = (index: number) => {
-    const isLine1 = index < line1.length;
-    const triggerPoint = isLine1 ? 0 : ((index - line1.length) / line2.length) * 0.15;
-    const isVisible = progress >= triggerPoint;
-    const fadeOut = progress > 0.15 ? Math.max(0, 1 - (progress - 0.15) * 10) : 1;
-    return isVisible ? 1 * fadeOut : 0;
-  };
+  const getExitStyles = () => {
+    const fadeOut = progress > 0.25 ? Math.max(0, 1 - (progress - 0.25) * 10) : 1;
+    const blurOut = progress > 0.25 ? (progress - 0.25) * 40 : 0;
+    const moveOut = progress > 0.25 ? (progress - 0.25) * -20 : 0;
 
-  const renderLine = (text: string, startIndex: number) => {
-    return text.split("").map((char, i) => (
-      <span
-        key={`${startIndex}-${i}`}
-        className="transition-all duration-300"
-        style={{
-          opacity: getVisibleStatus(startIndex + i),
-          display: "inline-block",
-          whiteSpace: char === " " ? "pre" : "normal",
-          filter: `blur(${progress > 0.15 ? (progress - 0.15) * 40 : 0}px)`,
-          transform: `translateY(${progress > 0.15 ? (progress - 0.15) * -20 : 0}px)`
-        }}
-      >
-        {char}
-      </span>
-    ));
+    return {
+      opacity: fadeOut,
+      filter: `blur(${blurOut}px)`,
+      transform: `translateY(${moveOut}px)`
+    };
   };
 
   return (
@@ -48,18 +33,39 @@ const LogoSection: React.FC<LogoSectionProps> = ({ scatter, progress }) => {
             opacity: uiOpacity,
             scale: 0.9 + (uiOpacity * 0.1),
           }}
+          transition={{ duration: 0.2 }}
           className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] flex items-center justify-center pointer-events-none"
         >
           <MorphingThreeDLogo progress={progress} />
         </motion.div>
       </div>
 
-      {/* Removed 'mb-10' to bring it closer to the logo */}
       <div className="text-center px-4">
-        <h1 className="text-xl sm:text-2xl md:text-[32px] font-[Raleway] font-light tracking-widest text-white  leading-tight select-none">
-          <div className="block">{renderLine(line1, 0)}</div>
-          <div className="h-2" />
-          <span className="font-[Raleway]">{renderLine(line2, line1.length + 1)}</span>
+        <h1 className="text-xl sm:text-2xl md:text-[32px] font-[Raleway] font-light tracking-widest text-white leading-tight select-none">
+          <div style={getExitStyles()}>
+            {/* Line 1 */}
+            <motion.div
+              initial={{ opacity: 0, filter: "blur(12px)" }}
+              whileInView={{ opacity: 1, filter: "blur(0px)" }}
+              viewport={{ once: false, amount: 0.5 }}
+              transition={{ duration: 1.0, ease: "easeOut" }}
+              className="block"
+            >
+              {line1}
+            </motion.div>
+
+            <div className="h-2" />
+
+            {/* Line 2 */}
+            <motion.div
+              initial={{ opacity: 0, filter: "blur(12px)" }}
+              animate={progress > 0.02 ? { opacity: 1, filter: "blur(0px)" } : { opacity: 0, filter: "blur(12px)" }}
+              transition={{ duration: 1.0, ease: "easeOut" }}
+              className="block font-[Raleway]"
+            >
+              {line2}
+            </motion.div>
+          </div>
         </h1>
       </div>
     </div>

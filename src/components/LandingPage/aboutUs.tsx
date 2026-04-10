@@ -1,12 +1,16 @@
-
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import Navbar from './Navbar';
 import GlassBot from './glassBot';
 import StarField from './StarField'; // New Component
+import fullLogoImg from '../../assets/Backgrounds/fullLogo.png';
 // import { ChevronDown } from 'lucide-react';
 import ScrollDown from './scrolldown';
-import aboutBgImage from '../../assets/Backgrounds/aboutUs.png';
+import aboutBgImage from '../../assets/Backgrounds/HomepageBG.jpg';
+import missionImg from '../../assets/Backgrounds/Mission.png';
+import visionImg from '../../assets/Backgrounds/Vision.png';
+import foundationImg from '../../assets/Backgrounds/OurFoundation.png';
+import MorphingThreeDLogo from './MorphingThreeDLogo';
 
 const AboutUs = () => {
   const containerRef = useRef<HTMLElement>(null);
@@ -55,39 +59,51 @@ const AboutUs = () => {
   // GALAXY ORB TRANSFORMATIONS
   // Timeline:
   // 0 - 0.4: Orb rises to center and squashes into a circle
-  // 0.4 - 0.6: Orb rests
-  // timeline ends shrink before fading starts
-  const orbY = useTransform(smoothProgress, [0, 0.4, 0.6, 0.75], [465, orbMetrics.targetY, orbMetrics.targetY, orbMetrics.targetY - 100]);
+  // 0.4 - 0.55: IMPLICIT REDUCTION (No Rest) Orb immediately scales down with text
+  // 0.55 - 0.75: Resting Phase 2
+  const orbY = useTransform(smoothProgress, [0, 0.4, 0.55], [465, orbMetrics.targetY, orbMetrics.targetY - 100]);
 
   // Condense the responsive width down perfectly to 500px forming a circle during phase 1
   const orbScaleX = useTransform(smoothProgress, [0, 0.4, 1], [1, orbMetrics.targetX, orbMetrics.targetX]);
-  // Phase 1 shrinks it to 0.7 fitting the screen. Phase 2 drops it to 0.25 (125px dot)
-  const orbScale = useTransform(smoothProgress, [0, 0.4, 0.6, 0.75], [1, 0.7, 0.7, 0.25]);
+  // Counteract the severe horizontal parent squash so child images retain their beautiful native 1:1 circular aspect ratio
+  const inverseOrbScaleX = useTransform(orbScaleX, s => 1 / s);
+
+  // Phase 1 shrinks it to 0.7 fitting the screen. Phase 2 drops it to 0.25 immediately after
+  const orbScale = useTransform(smoothProgress, [0, 0.4, 0.55], [1, 0.7, 0.20]);
 
   // Fade out rings as it forms the solid orb
   const ringsOpacity = useTransform(smoothProgress, [0, 0.4], [1, 0]);
 
-  // Fade out background image when orb centers
-  const bgOpacity = useTransform(smoothProgress, [0, 0.4], [1, 0]);
-
   // PHASE 2 TEXT TRANSFORMATIONS
-  // Holds until 0.9, fades completely before 0.95 to introduce a cinematic pause delay
-  const phase2Opacity = useTransform(smoothProgress, [0.6, 0.75, 0.9, 0.95], [0, 1, 1, 0]);
-  const phase2Y = useTransform(smoothProgress, [0.6, 0.75], [50, 0]);
+  // Fades in alongside orb scaling down (0.4 -> 0.55)
+  // Holds briefly until 0.6, fades completely before 0.65
+  const phase2Opacity = useTransform(smoothProgress, [0.4, 0.55, 0.6, 0.65], [0, 1, 1, 0]);
+  const phase2Y = useTransform(smoothProgress, [0.4, 0.55], [50, 0]);
 
   // PHASE 3 (THE FRACTURE) TRANSFORMATIONS
-  // Wait until text is safely faded out (starts at 0.95)
-  const coreGlowOpacity = useTransform(smoothProgress, [0.95, 1], [1, 0]);
+  // Wait until text is safely faded out (starts at 0.65)
+  const coreGlowOpacity = useTransform(smoothProgress, [0.65, 0.7], [1, 0]);
   // Use the exact calculated split distance to achieve exactly 60px visible gap accounting for all width squashes!
-  const orbSplitX = useTransform(smoothProgress, [0.95, 1], [0, orbMetrics.splitDist]);
+  const orbSplitX = useTransform(smoothProgress, [0.65, 0.8], [0, orbMetrics.splitDist]);
+
+  // Mathematically track the absolute geometric pixel drift of the circles combining all parent compression matrices
+  const textShiftLeft = useTransform(
+    [orbSplitX, orbScale, orbScaleX],
+    ([split, scale, sX]: any) => -(split * scale * sX)
+  );
+
+  const textShiftRight = useTransform(
+    [orbSplitX, orbScale, orbScaleX],
+    ([split, scale, sX]: any) => (split * scale * sX)
+  );
 
   // PHASE 3 TEXT TRANSFORMATIONS
   // Fades in precisely as the circles slide out into their final separated positions
-  const phase3TextOpacity = useTransform(smoothProgress, [0.97, 1], [0, 1]);
+  const phase3TextOpacity = useTransform(smoothProgress, [0.7, 0.8], [0, 1]);
 
 
   return (
-    <main ref={containerRef} className="relative w-full h-[600vh] bg-[#050508]">
+    <main ref={containerRef} className="relative w-full h-[350vh]">
 
       {/* FIXED VIEWPORT WINDOW */}
       <div className="sticky top-0 w-full h-screen overflow-hidden text-white font-['Raleway']">
@@ -98,28 +114,36 @@ const AboutUs = () => {
           className="absolute inset-0 w-full h-full bg-cover bg-center z-[-1]"
           style={{
             backgroundImage: `url(${typeof aboutBgImage === 'string' ? aboutBgImage : (aboutBgImage as any).src || aboutBgImage})`,
-            opacity: bgOpacity
+            opacity: 1
           }}
         />
-        <Navbar showLogo={true} />
+        <Navbar showLogo={true} customLogo={fullLogoImg} logoClassName="h-10 md:h-12 w-auto object-contain" />
 
         {/* 1. LAYER: SCATTERED STARS */}
         <StarField />
 
         {/* 2. LAYER: MAIN CONTENT */}
         <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-6 text-center">
+          {/* Pixelated Logo tightly locked to progress 0.41 (fully pixelated state), independently faded out when the sphere hits center */}
+          <motion.div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] sm:w-[530px] sm:h-[530px] z-[5] pointer-events-none opacity-80"
+            style={{ opacity: useTransform(smoothProgress, [0.3, 0.4], [0.8, 0]) }}
+          >
+            <MorphingThreeDLogo progress={0.41} />
+          </motion.div>
+
           <motion.div
             style={{ y: textY, scale: textScale, opacity: textOpacity }}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-4xl"
+            className="max-w-4xl relative z-10"
           >
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-light tracking-[0.1em] uppercase mb-8 leading-tight">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-light tracking-[0.1em] uppercase mb-8 leading-tight relative z-10">
               Integrated Solutions <br />
-              <span className="opacity-90">Focused On Quality</span>
+              <span className="opacity-90 text-3xl md:text-3xl lg:text-5xl">Focused On Quality</span>
             </h1>
-            <p className="text-sm md:text-lg tracking-[0.2em] leading-relaxed text-white/70 max-w-4xl mx-auto font-light">
+            <p className="text-sm md:text-lg tracking-[0.2em] leading-relaxed text-white/70 max-w-4xl mx-auto font-light relative z-10">
               AARK Global is an engineering innovation partner serving industries like manufacturing, technology, fintech, semiconductors, SaaS, and healthcare.
             </p>
           </motion.div>
@@ -139,9 +163,9 @@ const AboutUs = () => {
 
         {/* 4. LAYER: 3D GLASSBOT */}
         <motion.div
-          className="fixed bottom-2 right-10 z-[110] w-28 h-28 md:w-32 md:h-32 pointer-events-auto"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
+          className="fixed bottom-6 right-8 z-[110] w-24 h-24 md:w-28 md:h-28 pointer-events-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
           <div className="w-full h-full cursor-pointer relative group">
@@ -178,20 +202,42 @@ const AboutUs = () => {
 
           {/* Solid Black Base Dome - Left Descendant Full Circle */}
           <motion.div
-            className="absolute inset-0 w-full h-full rounded-[50%] bg-transparent"
+            className="absolute inset-0 w-full h-full rounded-[50%] bg-transparent flex items-center justify-center"
             style={{
               x: useTransform(orbSplitX, x => -x), // Negative shift mathematically counteracts container X-scaling squash
-              boxShadow: '0 0 40px 10px rgba(38, 123, 229), 0 0 80px 20px rgba(38, 123, 229, 0.10)'
+              boxShadow: '0 0 40px 10px rgba(46, 45, 177, 20%), 0 0 80px 20px rgba(46, 45, 177,20%)'
             }}
-          />
+          >
+            <motion.img
+              src={typeof missionImg === 'string' ? missionImg : (missionImg as any).src || missionImg}
+              className="w-full h-full p-6 md:p-12 object-contain z-10"
+              style={{ opacity: phase3TextOpacity, scaleX: inverseOrbScaleX }}
+              alt="Mission"
+            />
+          </motion.div>
 
           {/* Solid Black Base Dome - Right Descendant Full Circle */}
           <motion.div
-            className="absolute inset-0 w-full h-full rounded-[50%] bg-transparent"
+            className="absolute inset-0 w-full h-full rounded-[50%] bg-transparent flex items-center justify-center"
             style={{
               x: orbSplitX, // Positive shift
-              boxShadow: '0 0 40px 10px rgba(17, 57, 100,100), 0 0 80px 20px rgba(17, 57, 100,100)'
+              boxShadow: '0 0 40px 10px rgba(53,49,177,30%), 0 0 80px 20px rgba(53,49,177,30%)'
             }}
+          >
+            <motion.img
+              src={typeof visionImg === 'string' ? visionImg : (visionImg as any).src || visionImg}
+              className="w-full h-full p-6 md:p-12 object-contain z-10"
+              style={{ opacity: phase3TextOpacity, scaleX: inverseOrbScaleX }}
+              alt="Vision"
+            />
+          </motion.div>
+
+          {/* Center Foundation Image perfectly tracking the merged orb text sequence */}
+          <motion.img
+            src={typeof foundationImg === 'string' ? foundationImg : (foundationImg as any).src || foundationImg}
+            className="absolute inset-0 w-full h-full p-6 md:p-14 object-contain z-20 pointer-events-none"
+            style={{ opacity: phase2Opacity, scaleX: inverseOrbScaleX }}
+            alt="Our Foundation"
           />
         </motion.div>
 
@@ -211,37 +257,39 @@ const AboutUs = () => {
               Our Foundation
             </h2>
             <p className="text-[15px] md:text-lg tracking-[0.05em] leading-[1.8] text-white/50 font-light mx-auto max-w-[850px]">
-              AARK Global brings deep expertise across <span className="italic text-white/80">hardware</span> and <span className="italic text-white/80">software engineering, cloud platforms</span>, and <span className="italic text-white/80">enterprise solutions</span>. we combine real-world industry experience with modern practices to deliver scalable solutions that integrate seamlessly with existing systems and drive digital transformation.we build solutions that work, scale, and are embraced by teams and customers.
+              AARK Global brings deep expertise across <span className="italic text-white/80">hardware</span> and <span className="italic text-white/80">software engineering, cloud platforms</span>, and <span className="italic text-white/80">enterprise solutions</span>. we combine real-world industry experience with <br /> modern practices to deliver scalable solutions that integrate seamlessly with existing  <br />systems and drive digital transformation.we build solutions that work, scale, <br /> and are embraced by teams and customers.
             </p>
           </div>
         </motion.div>
 
         {/* 7. LAYER: PHASE 3 TEXT (MISSION & VISION) */}
         <motion.div
-          className="absolute inset-0 w-full h-full flex flex-col items-center justify-center z-20 pointer-events-none"
-          style={{
-            opacity: phase3TextOpacity,
-          }}
+          className="absolute inset-0 w-full h-full flex items-center justify-center z-20 pointer-events-none"
+          style={{ opacity: phase3TextOpacity }}
         >
-          {/* Transparent spacer exactly matching the small orb's physical height to push text below it */}
-          <div className="h-[120px] w-full" />
-
-          <div className="w-full flex justify-center mt-12 px-4 gap-[20px] md:gap-[200px] flex-col md:flex-row items-center md:items-start" >
-            {/* Left Block (Tracks exactly under Left Circle via geometry math) */}
-            <div className="w-full md:w-[300px] text-center">
+          {/* Central Anchor locking exactly 40px under the geometric centerline of the circles */}
+          <div className="absolute top-1/2 left-1/2 flex items-center justify-center translate-y-[60px] md:translate-y-[80px]">
+            {/* Left Block (Tracks exactly under Left Circle via absolute frame math) */}
+            <motion.div
+              className="absolute flex flex-col items-center justify-start w-[280px] md:w-[320px] text-center"
+              style={{ x: textShiftLeft }}
+            >
               <h3 className="text-3xl md:text-[42px] font-light mb-6 tracking-wide">Mission</h3>
               <p className="text-[14px] md:text-[15px] text-white/50 leading-[1.8] tracking-[0.05em] font-light">
                 Empower global innovation through <span className="italic text-white/80">advanced engineering</span> solutions, enabling clients to achieve results efficiently and cost-effectively.
               </p>
-            </div>
+            </motion.div>
 
-            {/* Right Block (Tracks exactly under Right Circle via geometry math) */}
-            <div className="w-full md:w-[300px] text-center">
+            {/* Right Block (Tracks exactly under Right Circle via absolute frame math) */}
+            <motion.div
+              className="absolute flex flex-col items-center justify-start w-[280px] md:w-[320px] text-center"
+              style={{ x: textShiftRight }}
+            >
               <h3 className="text-3xl md:text-[42px] font-light mb-6 tracking-wide">Vision</h3>
               <p className="text-[14px] md:text-[15px] text-white/50 leading-[1.8] tracking-[0.05em] font-light">
-                Be a <span className="italic text-white/80">trusted engineering partner</span>, driving innovation and delivering sustainable value through excellence and continuous improvement.
+                Be a <span className="italic text-white/80">trusted engineering partner</span>, <br className="hidden md:block" /> driving innovation and delivering sustainable value through excellence and continuous improvement.
               </p>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20">
