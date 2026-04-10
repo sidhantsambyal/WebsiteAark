@@ -4882,7 +4882,48 @@ Product`,position:"bottom-left"},paragraph2:{text:"[ We build scalable platforms
         .Btn:active {
           transform: scale(0.95);
         }
-      `})]}),rce=({progress:i=1})=>{const e=B.useRef(null),t=yk(),n=S0(0),r=rr(n,[0,1],[.4,0]),s=RD(r,{stiffness:50,damping:20}),[o,l]=B.useState(.4);B.useEffect(()=>{n.set(i)},[i,n]),B.useEffect(()=>s.on("change",h=>l(h)),[s]);const f=()=>{t("/ai-assistant")};return ee.jsxs("section",{id:"ChallengeOutcome",ref:e,className:"relative w-full h-screen flex items-center justify-center overflow-hidden bg-transparent text-white",children:[ee.jsx("div",{className:"absolute inset-0 z-0 pointer-events-none flex items-center justify-center opacity-60",children:ee.jsx(P6,{scatter:o,showText:!1})}),ee.jsxs("div",{className:"relative z-10 w-full max-w-5xl px-6 flex flex-col items-center text-center font-['Raleway']",children:[ee.jsxs(Bn.h2,{initial:{opacity:0,y:30,filter:"blur(12px)"},whileInView:{opacity:1,y:0,filter:"blur(0px)"},viewport:{once:!0},transition:{duration:1.2,ease:[.16,1,.3,1]},className:"text-2xl sm:text-4xl md:text-4xl font-light tracking-widest leading-tight",children:["Whatever the challenge,",ee.jsx("span",{className:"block mt-2 opacity-90",children:"We deliver outcomes – not just effort"})]}),ee.jsx(Bn.div,{initial:{opacity:0},whileInView:{opacity:1},viewport:{once:!0},transition:{delay:.4,duration:1},className:"mt-10 mb-14",children:ee.jsx("span",{className:"text-[10px] sm:text-xs tracking-[0.4em] font-[Raleway] px-6 py-3 bg-black/50 backdrop-blur-sm border-x border-white/10",children:"[ Your goals become our responsibility]"})}),ee.jsx(Bn.button,{onClick:f,initial:{opacity:0,y:20},whileInView:{opacity:1,y:0},viewport:{once:!0},transition:{delay:.6,duration:.8},whileHover:{backgroundColor:"#073766",scale:1.05},whileTap:{scale:.95},className:"mb-[0] pl-6 pr-5 pt-4 pb-3 border border-white/20 rounded-full bg-[#0d345a] text-white text-xs sm:text-sm tracking-[0.2em]  font-medium pointer-events-auto transition-all duration-300 flex items-center justify-center",children:"Start Conversation"})]})]})},sce="/WebsiteAark/assets/enterprise-AfQrUbyd.png",ace="/WebsiteAark/assets/Hardware-DH1GnZSy.png",oce="/WebsiteAark/assets/Platform-B1aNjUkC.png",lce="/WebsiteAark/assets/Product-B_pkTwru.png",cce="/WebsiteAark/assets/semiconductor-BuHyZThC.png",uce="/WebsiteAark/assets/Software-ClBW20rB.png",H6="/WebsiteAark/assets/background-CoVSPV7c.mp4",G6="/WebsiteAark/assets/HomepageBG-B8_FigBk.jpg",fce="/WebsiteAark/assets/blank-transparent-MdlLcG9-.png",W6=({color:i="white",isFixed:e=!0,tooltipText:t="Scroll Down"})=>{const n=i==="white"?"#1a1a1a":"white";return ee.jsxs(ee.Fragment,{children:[ee.jsx("style",{children:`
+      `})]}),rce=({progress:i=1})=>{const e=B.useRef(null),t=yk(),n=S0(0),r=rr(n,[0,1],[.4,0]),s=RD(r,{stiffness:50,damping:20}),[o,l]=B.useState(.4);B.useEffect(()=>{n.set(i)},[i,n]),B.useEffect(()=>s.on("change",h=>l(h)),[s]);const f=()=>{t("/ai-assistant")};return ee.jsxs("section",{id:"ChallengeOutcome",ref:e,className:"relative w-full h-screen flex items-center justify-center overflow-hidden bg-transparent text-white",children:[ee.jsx("div",{className:"absolute inset-0 z-0 pointer-events-none flex items-center justify-center opacity-60",children:ee.jsx(P6,{scatter:o,showText:!1})}),ee.jsxs("div",{className:"relative z-10 w-full max-w-5xl px-6 flex flex-col items-center text-center font-['Raleway']",children:[ee.jsxs(Bn.h2,{initial:{opacity:0,y:30,filter:"blur(12px)"},whileInView:{opacity:1,y:0,filter:"blur(0px)"},viewport:{once:!0},transition:{duration:1.2,ease:[.16,1,.3,1]},className:"text-2xl sm:text-4xl md:text-4xl font-light tracking-widest leading-tight",children:["Whatever the challenge,",ee.jsx("span",{className:"block mt-2 opacity-90",children:"We deliver outcomes – not just effort"})]}),ee.jsx(Bn.div,{initial:{opacity:0},whileInView:{opacity:1},viewport:{once:!0},transition:{delay:.4,duration:1},className:"mt-10 mb-14",children:ee.jsx("span",{className:"text-[10px] sm:text-xs tracking-[0.4em] font-[Raleway] px-6 py-3 bg-black/50 backdrop-blur-sm border-x border-white/10",children:"[ Your goals become our responsibility]"})}),ee.jsx(Bn.button,{onClick:f,initial:{opacity:0,y:20},whileInView:{opacity:1,y:0},viewport:{once:!0},transition:{delay:.6,duration:.8},whileTap:{scale:.95},className:"InvertedBtn relative px-8 py-4 text-white text-xs sm:text-sm tracking-[0.2em] font-bold transition-all duration-300 flex items-center justify-center",children:ee.jsx("span",{className:"relative z-10",children:"Start Conversation"})})]}),ee.jsx("style",{children:`
+        .InvertedBtn {
+          /* DEFAULT: Solid Gradient */
+          background: linear-gradient(to right, #8a4fff, #2d82e4);
+          border-radius: 50px;
+          border: none;
+          cursor: pointer;
+          box-shadow: 0 4px 15px rgba(138, 79, 255, 0.3);
+          z-index: 1;
+        }
+
+        /* The Outlined Border (Hidden by default, shown on hover) */
+        .InvertedBtn::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: 50px; 
+          padding: 2px; /* Border thickness */
+          background: linear-gradient(to right, #8a4fff, #2d82e4); 
+          -webkit-mask: 
+            linear-gradient(#fff 0 0) content-box, 
+            linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+
+        /* HOVER: Becomes Transparent with Outline */
+        .InvertedBtn:hover {
+          background: transparent;
+          box-shadow: none;
+        }
+
+        .InvertedBtn:hover::before {
+          opacity: 1;
+        }
+
+        .InvertedBtn:active {
+          transform: scale(0.95);
+        }
+      `})]})},sce="/WebsiteAark/assets/enterprise-AfQrUbyd.png",ace="/WebsiteAark/assets/Hardware-DH1GnZSy.png",oce="/WebsiteAark/assets/Platform-B1aNjUkC.png",lce="/WebsiteAark/assets/Product-B_pkTwru.png",cce="/WebsiteAark/assets/semiconductor-BuHyZThC.png",uce="/WebsiteAark/assets/Software-ClBW20rB.png",H6="/WebsiteAark/assets/background-CoVSPV7c.mp4",G6="/WebsiteAark/assets/HomepageBG-B8_FigBk.jpg",fce="/WebsiteAark/assets/blank-transparent-MdlLcG9-.png",W6=({color:i="white",isFixed:e=!0,tooltipText:t="Scroll Down"})=>{const n=i==="white"?"#1a1a1a":"white";return ee.jsxs(ee.Fragment,{children:[ee.jsx("style",{children:`
           .sd-container {
             position: ${e?"fixed":"absolute"};
             bottom: 20px;
